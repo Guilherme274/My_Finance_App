@@ -76,13 +76,19 @@ class DefaultDataSeeder extends Seeder
         foreach ($categories as $name => [$kind, $color, $icon, $patterns]) {
             $categoryId = self::id("category:{$name}");
 
-            DB::table('categories')->insertOrIgnore($this->stamp([
+            $categoryData = [
                 'id' => $categoryId,
                 'name' => $name,
                 'kind' => $kind,
                 'color' => $color,
                 'icon' => $icon,
-            ]));
+            ];
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn('categories', 'include_in_budget')) {
+                $categoryData['include_in_budget'] = $kind !== 'transfer';
+            }
+
+            DB::table('categories')->insertOrIgnore($this->stamp($categoryData));
 
             foreach ($patterns as $pattern) {
                 DB::table('category_rules')->insertOrIgnore($this->stamp([

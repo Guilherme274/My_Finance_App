@@ -17,11 +17,15 @@ class Category extends Model
         'transfer' => 'Transferência',
     ];
 
-    protected $fillable = ['name', 'kind', 'color', 'icon', 'parent_id', 'monthly_budget_cents', 'monthly_budget_percent'];
+    protected $fillable = ['name', 'kind', 'color', 'icon', 'parent_id', 'monthly_budget_cents', 'monthly_budget_percent', 'include_in_budget'];
 
     protected function casts(): array
     {
-        return ['monthly_budget_cents' => 'integer', 'monthly_budget_percent' => 'float'];
+        return [
+            'monthly_budget_cents' => 'integer',
+            'monthly_budget_percent' => 'float',
+            'include_in_budget' => 'boolean',
+        ];
     }
 
     public function parent(): BelongsTo

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Category;
+use App\Models\Setting;
 use App\Models\Transaction;
 use App\Support\BankBrand;
 use Carbon\Carbon;
@@ -25,6 +26,12 @@ class BudgetPage extends Component
 
     public array $budgetInputs = [];
 
+    public string $salaryInput = '';
+
+    public int $salaryCents = 0;
+
+    public bool $editingSalary = false;
+
     public ?string $savedNotice = null;
 
     public function mount(): void
@@ -44,16 +51,47 @@ class BudgetPage extends Component
         }
 
         session(['finance_selected_month' => $this->month]);
+        $this->salaryCents = (int) Setting::get('budget_salary_cents', 0);
+        $this->salaryInput = $this->salaryCents > 0 ? number_format($this->salaryCents / 100, 2, ',', '.') : '';
         $this->loadBudgetInputs();
     }
 
     protected function loadBudgetInputs(): void
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::where('include_in_budget', true)->orderBy('name')->get();
+        $salaryCents = (int) Setting::get('budget_salary_cents', 0);
+
         foreach ($categories as $cat) {
-            $defaultCents = $cat->monthly_budget_cents ?: 80000;
-            $this->budgetInputs[$cat->id] = number_format($defaultCents / 100, 2, ',', '');
+            if ($cat->monthly_budget_percent !== null && $salaryCents > 0) {
+                $calc = (int) round(($salaryCents * $cat->monthly_budget_percent) / 100);
+                $this->budgetInputs[$cat->id] = number_format($calc / 100, 2, ',', '');
+            } else {
+                $defaultCents = $cat->monthly_budget_cents ?: 80000;
+                $this->budgetInputs[$cat->id] = number_format($defaultCents / 100, 2, ',', '');
+            }
         }
+    }
+
+    public function toggleEditSalary(): void
+    {
+        $this->editingSalary = ! $this->editingSalary;
+        if ($this->editingSalary) {
+            $this->salaryInput = $this->salaryCents > 0 ? number_format($this->salaryCents / 100, 2, ',', '.') : '';
+        }
+    }
+
+    public function saveSalary(): void
+    {
+        $clean = str_replace(['.', ' ', 'R$', 'r$'], '', (string) $this->salaryInput);
+        $clean = str_replace(',', '.', $clean);
+        $cents = max(0, (int) round(((float) $clean) * 100));
+
+        Setting::put('budget_salary_cents', $cents);
+        $this->salaryCents = $cents;
+        $this->salaryInput = $cents > 0 ? number_format($cents / 100, 2, ',', '.') : '';
+        $this->editingSalary = false;
+        $this->loadBudgetInputs();
+        $this->savedNotice = 'Salário de referência salvo com sucesso!';
     }
 
     public function previousMonth(): void
@@ -90,6 +128,7 @@ class BudgetPage extends Component
     {
         $transactions = Transaction::with(['category', 'account'])
             ->inMonth($this->month)
+            ->includedInBudget()
             ->orderBy('date')
             ->get();
 
@@ -125,13 +164,21 @@ class BudgetPage extends Component
             ->orderByDesc('created_at')
             ->get();
 
+        // Apenas transações que entram no orçamento (sem categoria ou categoria com include_in_budget=true)
+        $budgetMonthTx = $currentMonthTx->filter(fn ($t) => ! $t->category || $t->category->include_in_budget);
+
         $prevMonthTx = Transaction::query()
             ->inMonth($prevStart->format('Y-m'))
+            ->includedInBudget()
             ->get();
 
-        $currentIncomeCents = (int) $currentMonthTx->where('amount_cents', '>', 0)->sum('amount_cents');
-        $currentExpenseCents = abs((int) $currentMonthTx->where('amount_cents', '<', 0)->sum('amount_cents'));
+        $currentIncomeCents = (int) $budgetMonthTx->where('amount_cents', '>', 0)->sum('amount_cents');
+        $currentExpenseCents = abs((int) $budgetMonthTx->where('amount_cents', '<', 0)->sum('amount_cents'));
         $prevExpenseCents = abs((int) $prevMonthTx->where('amount_cents', '<', 0)->sum('amount_cents'));
+
+        $referenceSalaryCents = $this->salaryCents > 0 ? $this->salaryCents : max($currentIncomeCents, 1);
+        $salarySurplusCents = $referenceSalaryCents - $currentExpenseCents;
+        $budgetUsagePct = round(($currentExpenseCents / $referenceSalaryCents) * 100, 1);
 
         if ($prevExpenseCents > 0) {
             $efficiencyDiffPercent = round((($currentExpenseCents - $prevExpenseCents) / $prevExpenseCents) * 100, 1);
@@ -141,13 +188,14 @@ class BudgetPage extends Component
             $savingsDiffCents = 0;
         }
 
-        // 4-Month Comparative Evolution
+        // 4-Month Comparative Evolution (apenas transações incluídas no orçamento)
         $monthsComparison = [];
-        $maxBarCents = 100000;
+        $maxBarCents = max(100000, $referenceSalaryCents);
         for ($i = 3; $i >= 0; $i--) {
             $mStart = $currentStart->copy()->subMonths($i)->startOfMonth();
             $txs = Transaction::query()
                 ->inMonth($mStart->format('Y-m'))
+                ->includedInBudget()
                 ->get();
             $inc = (int) $txs->where('amount_cents', '>', 0)->sum('amount_cents');
             $exp = abs((int) $txs->where('amount_cents', '<', 0)->sum('amount_cents'));
@@ -167,19 +215,18 @@ class BudgetPage extends Component
         }
         unset($mc);
 
-        // Category Budgets & Operational Limits
-        $txsByCategory = $currentMonthTx->groupBy(fn ($t) => (string) ($t->category_id ?? '__none__'));
+        // Category Budgets & Operational Limits (apenas categorias incluídas no orçamento)
+        $txsByCategory = $budgetMonthTx->groupBy(fn ($t) => (string) ($t->category_id ?? '__none__'));
         $spentByCategory = $txsByCategory->map(fn ($items) => abs((int) $items->where('amount_cents', '<', 0)->sum('amount_cents')));
 
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::where('include_in_budget', true)->orderBy('name')->get();
         $categoriesById = $categories->keyBy('id');
 
-        // All categories that have spending this month OR are marked as expense
         $allCatKeys = collect($categories->pluck('id'))
             ->merge($spentByCategory->keys())
             ->unique();
 
-        $categoryLimits = $allCatKeys->map(function ($catKey) use ($categoriesById, $spentByCategory, $txsByCategory) {
+        $categoryLimits = $allCatKeys->map(function ($catKey) use ($categoriesById, $spentByCategory, $txsByCategory, $referenceSalaryCents) {
             $spent = $spentByCategory->get($catKey, 0);
             $rawTxs = $txsByCategory->get($catKey, collect());
 
@@ -204,6 +251,7 @@ class BudgetPage extends Component
                     'name' => 'Sem categoria',
                     'spent_cents' => $spent,
                     'budget_cents' => 50000,
+                    'budget_percent' => null,
                     'pct' => $spent > 0 ? 100 : 0,
                     'exceeded_cents' => max(0, $spent - 50000),
                     'remaining_cents' => max(0, 50000 - $spent),
@@ -217,7 +265,12 @@ class BudgetPage extends Component
                 return null;
             }
 
-            $budget = $cat->monthly_budget_cents > 0 ? (int) $cat->monthly_budget_cents : 60000;
+            if ($cat->monthly_budget_percent !== null && $referenceSalaryCents > 0) {
+                $budget = (int) round(($referenceSalaryCents * $cat->monthly_budget_percent) / 100);
+            } else {
+                $budget = $cat->monthly_budget_cents > 0 ? (int) $cat->monthly_budget_cents : 60000;
+            }
+
             $pct = $budget > 0 ? round(($spent / $budget) * 100) : 0;
 
             return [
@@ -225,6 +278,7 @@ class BudgetPage extends Component
                 'name' => $cat->name,
                 'spent_cents' => $spent,
                 'budget_cents' => $budget,
+                'budget_percent' => $cat->monthly_budget_percent,
                 'pct' => $pct,
                 'exceeded_cents' => max(0, $spent - $budget),
                 'remaining_cents' => max(0, $budget - $spent),
@@ -238,7 +292,7 @@ class BudgetPage extends Component
         $essentialCents = 0;
         $lifestyleCents = 0;
 
-        foreach ($currentMonthTx->where('amount_cents', '<', 0) as $tx) {
+        foreach ($budgetMonthTx->where('amount_cents', '<', 0) as $tx) {
             $catLower = mb_strtolower($tx->category->name ?? '');
             $isEssential = false;
             foreach ($essentialNames as $kw) {
@@ -254,16 +308,24 @@ class BudgetPage extends Component
             }
         }
 
-        $investedSurplusCents = max(0, $currentIncomeCents - $currentExpenseCents);
-        $baseRuleTotal = max(1, $essentialCents + $lifestyleCents + $investedSurplusCents);
+        $baseRuleTotal = $referenceSalaryCents;
 
         $essentialPct = (int) round(($essentialCents / $baseRuleTotal) * 100);
         $lifestylePct = (int) round(($lifestyleCents / $baseRuleTotal) * 100);
         $investPct = max(0, 100 - $essentialPct - $lifestylePct);
 
+        $essentialTargetCents = (int) round($baseRuleTotal * 0.50);
+        $lifestyleTargetCents = (int) round($baseRuleTotal * 0.30);
+        $investTargetCents = (int) round($baseRuleTotal * 0.20);
+        $investAvailableCents = max(0, $baseRuleTotal - $essentialCents - $lifestyleCents);
+
         return view('livewire.budget-page', [
             'currentMonthLabel' => ucfirst($currentStart->locale('pt_BR')->translatedFormat('M Y')),
             'prevMonthLabel' => ucfirst($prevStart->locale('pt_BR')->translatedFormat('M Y')),
+            'salaryCents' => $this->salaryCents,
+            'referenceSalaryCents' => $referenceSalaryCents,
+            'salarySurplusCents' => $salarySurplusCents,
+            'budgetUsagePct' => $budgetUsagePct,
             'currentIncomeCents' => $currentIncomeCents,
             'currentExpenseCents' => $currentExpenseCents,
             'prevExpenseCents' => $prevExpenseCents,
@@ -271,6 +333,12 @@ class BudgetPage extends Component
             'savingsDiffCents' => $savingsDiffCents,
             'monthsComparison' => $monthsComparison,
             'categoryLimits' => $categoryLimits,
+            'essentialCents' => $essentialCents,
+            'lifestyleCents' => $lifestyleCents,
+            'essentialTargetCents' => $essentialTargetCents,
+            'lifestyleTargetCents' => $lifestyleTargetCents,
+            'investTargetCents' => $investTargetCents,
+            'investAvailableCents' => $investAvailableCents,
             'essentialPct' => $essentialPct,
             'lifestylePct' => $lifestylePct,
             'investPct' => $investPct,

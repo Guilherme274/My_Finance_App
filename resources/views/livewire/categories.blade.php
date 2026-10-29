@@ -26,7 +26,12 @@
                                 </span>
                                 <span>
                                     <span class="block text-sm font-semibold">{{ $c->name }}</span>
-                                    <span class="block text-xs text-slate-400">{{ $c->transactions_count }} lançamento(s)</span>
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="text-xs text-slate-400">{{ $c->transactions_count }} lançamento(s)</span>
+                                        @if (! $c->include_in_budget)
+                                            <span class="rounded bg-slate-800/80 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 border border-slate-700/50">Fora do orçamento</span>
+                                        @endif
+                                    </div>
                                 </span>
                             </span>
                             @if ($c->monthly_budget_percent !== null)
@@ -85,6 +90,15 @@
                             <label class="label">Cor</label>
                             <input type="color" wire:model="color" class="h-10 w-full rounded">
                         </div>
+                    </div>
+                    <div class="rounded-xl bg-slate-100 p-3 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50">
+                        <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                            <input type="checkbox" wire:model="includeInBudget" class="rounded border-slate-400 dark:border-slate-600 bg-white dark:bg-slate-700 text-primary focus:ring-primary h-4 w-4">
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100">Entrar no orçamento e gráficos gerais</span>
+                        </label>
+                        <p class="text-[0.6875rem] text-slate-500 dark:text-slate-400 mt-1 ml-6 leading-relaxed">
+                            Mantenha marcado para categorias normais de gastos e receitas. Desmarque para transferências entre contas próprias ou pagamento de fatura, evitando falsa impressão de gastos duplicados.
+                        </p>
                     </div>
                     <div class="flex gap-2">
                         @if ($editingId)

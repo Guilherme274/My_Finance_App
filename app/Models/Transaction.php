@@ -52,6 +52,18 @@ class Transaction extends Model
         return $query->whereBetween('date', [$start->toDateString(), $end->toDateString()]);
     }
 
+    /**
+     * Filtra apenas lançamentos cujas categorias entram no orçamento e gráficos gerais.
+     * Lançamentos sem categoria continuam entrando até serem categorizados.
+     */
+    public function scopeIncludedInBudget(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->whereNull('category_id')
+                ->orWhereHas('category', fn (Builder $cq) => $cq->where('include_in_budget', true));
+        });
+    }
+
     public function isExpense(): bool
     {
         return $this->amount_cents < 0;

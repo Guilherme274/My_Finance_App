@@ -34,13 +34,23 @@ class Categories extends Component
 
     public string $budgetPercent = '';
 
+    public bool $includeInBudget = true;
+
     public string $newPattern = '';
 
     public function create(): void
     {
         $this->resetValidation();
         $this->reset(['editingId', 'name', 'kind', 'color', 'icon', 'budget', 'budgetPercent', 'newPattern']);
+        $this->includeInBudget = true;
         $this->showForm = true;
+    }
+
+    public function updatedKind(string $value): void
+    {
+        if ($value === 'transfer') {
+            $this->includeInBudget = false;
+        }
     }
 
     public function edit(string $id): void
@@ -51,6 +61,7 @@ class Categories extends Component
         $this->name = $c->name;
         $this->kind = $c->kind;
         $this->color = $c->color;
+        $this->includeInBudget = (bool) $c->include_in_budget;
         $icon = (string) $c->icon;
         if (! preg_match('/^[a-z0-9_]+$/', $icon)) {
             $icon = MaterialIcon::forCategory($c->name, $c->kind);
@@ -70,6 +81,7 @@ class Categories extends Component
             'color' => ['required', 'string', 'max:9'],
             'icon' => ['nullable', 'string', 'max:16'],
             'budgetPercent' => ['nullable', 'numeric', 'min:0.01', 'max:100'],
+            'includeInBudget' => ['boolean'],
         ]);
 
         $budget = null;
@@ -95,6 +107,7 @@ class Categories extends Component
             'icon' => $icon ?: null,
             'monthly_budget_cents' => $this->budgetPercent !== '' ? null : $budget,
             'monthly_budget_percent' => $this->budgetPercent !== '' ? (float) str_replace(',', '.', $this->budgetPercent) : null,
+            'include_in_budget' => $this->includeInBudget,
         ]);
 
         $this->editingId = $category->id;

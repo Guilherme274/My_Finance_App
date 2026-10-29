@@ -47,14 +47,14 @@ class Dashboard extends Component
 
     public function render()
     {
-        $monthQuery = fn () => Transaction::query()->inMonth($this->month);
+        $monthQuery = fn () => Transaction::query()->inMonth($this->month)->includedInBudget();
 
         $income = (int) $monthQuery()->where('amount_cents', '>', 0)->sum('amount_cents');
         $expense = (int) $monthQuery()->where('amount_cents', '<', 0)->sum('amount_cents');
         $expenseAbs = abs($expense);
 
         $previousMonth = CarbonImmutable::createFromFormat('Y-m-d', $this->month.'-01')->subMonth()->format('Y-m');
-        $prevQuery = fn () => Transaction::query()->inMonth($previousMonth);
+        $prevQuery = fn () => Transaction::query()->inMonth($previousMonth)->includedInBudget();
 
         $previousIncome = (int) $prevQuery()->where('amount_cents', '>', 0)->sum('amount_cents');
         $previousExpense = abs((int) $prevQuery()->where('amount_cents', '<', 0)->sum('amount_cents'));

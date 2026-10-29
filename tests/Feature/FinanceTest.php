@@ -348,4 +348,84 @@ CSV;
             ->call('enableBiometrics')
             ->assertHasErrors(['biometrics']);
     }
+
+    public function test_category_include_in_budget_flag_and_salary_reference(): void
+    {
+        $account = Account::firstOrFail();
+
+        // 1) Criar categoria fora do orçamento (ex: Pagamento de Fatura)
+        $catFatura = Category::create([
+            'name' => 'Fatura Cartão',
+            'kind' => 'transfer',
+            'color' => '#64748b',
+            'include_in_budget' => false,
+        ]);
+
+        $catAlim = Category::create([
+            'name' => 'Restaurante Teste',
+            'kind' => 'expense',
+            'color' => '#f97316',
+            'include_in_budget' => true,
+            'monthly_budget_percent' => 10.0,
+        ]);
+
+        $this->assertFalse($catFatura->include_in_budget);
+        $this->assertTrue($catAlim->include_in_budget);
+
+        $month = '2026-10';
+
+        // Lançamento de pagamento de fatura: R$ 2.323,57 (não deve inflacionar despesas do mês)
+        $txFatura = Transaction::create([
+            'account_id' => $account->id,
+            'category_id' => $catFatura->id,
+            'date' => '2026-10-09',
+            'description' => 'Pagamento de fatura Nubank',
+            'amount_cents' => -232357,
+            'source' => 'manual',
+        ]);
+
+        // Lançamento de despesa real: R$ 150,00
+        $txAlim = Transaction::create([
+            'account_id' => $account->id,
+            'category_id' => $catAlim->id,
+            'date' => '2026-10-10',
+            'description' => 'Jantar',
+            'amount_cents' => -15000,
+            'source' => 'manual',
+        ]);
+
+        // Escopo includedInBudget exclui o pagamento de fatura
+        $budgetTxs = Transaction::query()->inMonth($month)->includedInBudget()->get();
+        $this->assertTrue($budgetTxs->contains('id', $txAlim->id));
+        $this->assertFalse($budgetTxs->contains('id', $txFatura->id));
+
+        // 2) Testar inserção do salário na página de orçamento e cálculo das metas
+        Livewire::test(\App\Livewire\BudgetPage::class, ['month' => $month])
+            ->set('salaryInput', '5.000,00')
+            ->call('saveSalary')
+            ->assertSet('salaryCents', 500000)
+            ->assertSee('5.000,00');
+
+        $this->assertSame(500000, (int) Setting::get('budget_salary_cents'));
+
+        // 3) Verificar renderização da página com o salário de 5000 e despesa excluindo a fatura
+        Livewire::test(\App\Livewire\BudgetPage::class, ['month' => $month])
+            ->assertViewHas('referenceSalaryCents', 500000)
+            ->assertViewHas('currentExpenseCents', 15000) // apenas os 150 reais, sem os 2323,57
+            ->assertViewHas('essentialTargetCents', 250000) // 50% de 5.000 = 2.500
+            ->assertViewHas('lifestyleTargetCents', 150000) // 30% de 5.000 = 1.500
+            ->assertViewHas('investTargetCents', 100000); // 20% de 5.000 = 1.000
+
+        // 4) Gerenciamento da flag include_in_budget na tela de Categorias
+        Livewire::test(\App\Livewire\Categories::class)
+            ->call('create')
+            ->set('name', 'Nova Categoria Fatura')
+            ->set('kind', 'transfer')
+            ->assertSet('includeInBudget', false)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $savedCat = Category::where('name', 'Nova Categoria Fatura')->firstOrFail();
+        $this->assertFalse($savedCat->include_in_budget);
+    }
 }

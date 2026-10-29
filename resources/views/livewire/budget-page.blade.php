@@ -37,6 +37,113 @@
             </div>
         @endif
 
+        <!-- Card Salário / Renda de Referência do Orçamento -->
+        <div class="rounded-2xl bg-surface-container-low p-4 sm:p-5 ghost-border space-y-4 shadow-md">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/15 text-primary flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined">payments</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-sm font-bold text-on-surface">Salário / Renda de Referência</h2>
+                            @if($salaryCents > 0)
+                                <span class="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">Base Ativa</span>
+                            @else
+                                <span class="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-500">Usando Entradas Reais</span>
+                            @endif
+                        </div>
+                        <p class="text-[0.6875rem] text-on-surface-variant">Referência total para cálculo das metas por categoria e regra 50/30/20.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    @if(! $editingSalary)
+                        <div class="flex items-baseline gap-1.5 mr-1">
+                            <span class="text-xs text-on-surface-variant font-medium">Referência:</span>
+                            <span class="text-base font-extrabold text-primary tabular-nums">
+                                R$ {{ number_format($referenceSalaryCents / 100, 2, ',', '.') }}
+                            </span>
+                        </div>
+                        <button type="button" wire:click="toggleEditSalary" class="rounded-xl bg-surface-container-high px-3 py-1.5 text-xs font-semibold text-on-surface hover:text-primary transition-colors flex items-center gap-1 tap-bounce">
+                            <span class="material-symbols-outlined text-sm">edit</span>
+                            <span>{{ $salaryCents > 0 ? 'Alterar Salário' : 'Inserir Salário' }}</span>
+                        </button>
+                    @endif
+                </div>
+            </div>
+
+            @if($editingSalary)
+                <form wire:submit="saveSalary" class="p-3.5 rounded-xl bg-surface-container border border-outline-variant/20 space-y-3 animate-pop">
+                    <label class="block text-xs font-semibold text-on-surface">Informe seu salário ou renda mensal líquida (R$):</label>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="flex items-center gap-1.5 bg-surface-container-lowest px-3 py-2 rounded-lg border border-outline-variant/30 flex-1 max-w-xs">
+                            <span class="text-sm font-bold text-primary">R$</span>
+                            <input
+                                type="text"
+                                inputmode="decimal"
+                                wire:model="salaryInput"
+                                placeholder="Ex: 5.000,00"
+                                autofocus
+                                class="w-full bg-transparent border-none p-0 text-sm font-bold text-on-surface focus:outline-none tabular-nums"
+                            />
+                        </div>
+                        <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:bg-primary-fixed transition-colors tap-bounce">
+                            Salvar Salário
+                        </button>
+                        <button type="button" wire:click="toggleEditSalary" class="px-3 py-2 rounded-lg bg-surface-container-high text-on-surface-variant text-xs font-semibold hover:text-on-surface">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            @endif
+
+            <!-- Visão de Comprometimento do Salário no Mês -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-outline-variant/15">
+                <div class="bg-surface-container/60 rounded-xl p-3">
+                    <span class="text-[0.65rem] font-semibold uppercase tracking-wider text-on-surface-variant block">Salário de Referência</span>
+                    <span class="text-base font-extrabold text-on-surface tabular-nums mt-0.5 block">
+                        R$ {{ number_format($referenceSalaryCents / 100, 2, ',', '.') }}
+                    </span>
+                    <span class="text-[0.6rem] text-on-surface-variant block mt-0.5">
+                        {{ $salaryCents > 0 ? 'Salário cadastrado' : 'Entradas do mês' }}
+                    </span>
+                </div>
+                <div class="bg-surface-container/60 rounded-xl p-3">
+                    <span class="text-[0.65rem] font-semibold uppercase tracking-wider text-on-surface-variant block">Gastos Orçados</span>
+                    <span class="text-base font-extrabold text-expense tabular-nums mt-0.5 block">
+                        R$ {{ number_format($currentExpenseCents / 100, 2, ',', '.') }}
+                    </span>
+                    <span class="text-[0.6rem] {{ $budgetUsagePct > 100 ? 'text-error font-bold' : 'text-on-surface-variant' }} block mt-0.5">
+                        {{ number_format($budgetUsagePct, 1, ',', '.') }}% do total
+                    </span>
+                </div>
+                <div class="bg-surface-container/60 rounded-xl p-3">
+                    <span class="text-[0.65rem] font-semibold uppercase tracking-wider text-on-surface-variant block">Saldo Disponível</span>
+                    <span class="text-base font-extrabold {{ $salarySurplusCents >= 0 ? 'text-primary' : 'text-error' }} tabular-nums mt-0.5 block">
+                        R$ {{ number_format(abs($salarySurplusCents) / 100, 2, ',', '.') }}
+                    </span>
+                    <span class="text-[0.6rem] text-on-surface-variant block mt-0.5">
+                        {{ $salarySurplusCents >= 0 ? 'Livre no mês' : 'Excedeu a referência' }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Barra de Progresso do Orçamento -->
+            <div class="space-y-1.5 pt-1">
+                <div class="flex items-center justify-between text-xs font-semibold">
+                    <span class="text-on-surface-variant text-[0.6875rem]">Progresso do consumo da renda</span>
+                    <span class="{{ $budgetUsagePct > 100 ? 'text-error' : 'text-primary' }} tabular-nums">{{ number_format(min(100, $budgetUsagePct), 1, ',', '.') }}% utilizado</span>
+                </div>
+                <div class="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden p-0.5">
+                    <div
+                        class="h-full rounded-full transition-all duration-500 {{ $budgetUsagePct > 100 ? 'bg-error' : ($budgetUsagePct >= 80 ? 'bg-amber-400' : 'bg-primary') }}"
+                        style="width: {{ min(100, max(2, $budgetUsagePct)) }}%"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Hero Month-over-Month Performance Card -->
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface-container-high via-surface-container to-surface-container-low p-6 ghost-border shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
             <div class="absolute -top-20 -right-20 w-56 h-56 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
@@ -168,19 +275,22 @@
 
                     <div class="grid grid-cols-3 gap-2 pt-1 text-center">
                         <div class="bg-surface-container rounded-xl p-2.5">
-                            <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block">Essenciais</span>
+                            <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block truncate">Essenciais</span>
                             <span class="text-sm font-extrabold text-primary tabular-nums">{{ $essentialPct }}%</span>
-                            <span class="text-[0.6rem] text-on-surface-variant block">Meta: 50%</span>
+                            <span class="text-[0.6rem] text-on-surface-variant block mt-0.5">Meta: 50%</span>
+                            <span class="text-[0.65rem] text-primary/80 font-bold block mt-0.5">R$ {{ number_format($essentialTargetCents / 100, 0, ',', '.') }}</span>
                         </div>
                         <div class="bg-surface-container rounded-xl p-2.5">
-                            <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block">Estilo de Vida</span>
+                            <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block truncate">Estilo de Vida</span>
                             <span class="text-sm font-extrabold text-tertiary tabular-nums">{{ $lifestylePct }}%</span>
-                            <span class="text-[0.6rem] text-on-surface-variant block">Meta: 30%</span>
+                            <span class="text-[0.6rem] text-on-surface-variant block mt-0.5">Meta: 30%</span>
+                            <span class="text-[0.65rem] text-tertiary/80 font-bold block mt-0.5">R$ {{ number_format($lifestyleTargetCents / 100, 0, ',', '.') }}</span>
                         </div>
                         <div class="bg-surface-container rounded-xl p-2.5">
-                            <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block">Investimentos</span>
+                            <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block truncate">Investimentos</span>
                             <span class="text-sm font-extrabold text-secondary-fixed-dim tabular-nums">{{ $investPct }}%</span>
-                            <span class="text-[0.6rem] text-on-surface-variant block">Meta: 20%</span>
+                            <span class="text-[0.6rem] text-on-surface-variant block mt-0.5">Meta: 20%</span>
+                            <span class="text-[0.65rem] text-secondary-fixed-dim/80 font-bold block mt-0.5">R$ {{ number_format($investTargetCents / 100, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </section>
@@ -288,6 +398,9 @@
                                         </span>
                                         <span class="text-[0.6875rem] text-on-surface-variant tabular-nums">
                                             de R$ {{ number_format($cat['budget_cents'] / 100, 2, ',', '.') }}
+                                            @if(! empty($cat['budget_percent']))
+                                                <span class="text-[0.625rem] text-primary/80">({{ number_format($cat['budget_percent'], 1, ',', '.') }}%)</span>
+                                            @endif
                                         </span>
                                     </div>
 
