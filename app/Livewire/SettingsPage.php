@@ -26,6 +26,16 @@ class SettingsPage extends Component
 
     public bool $biometricsEnabled = false;
 
+    public bool $hasPin = false;
+
+    public string $currentPinSource = 'none';
+
+    public string $newPin = '';
+
+    public string $newPinConfirmation = '';
+
+    public bool $isEditingPin = false;
+
     public function mount(): void
     {
         $this->showCents = filter_var(Setting::get('settings_show_cents', true), FILTER_VALIDATE_BOOLEAN);
@@ -34,6 +44,24 @@ class SettingsPage extends Component
         $this->budgetMethod = (string) Setting::get('settings_budget_method', '50-30-20');
         $this->accent = (string) Setting::get('settings_accent', '#4edea3');
         $this->biometricsEnabled = filter_var(Setting::get('settings_biometrics_enabled', false), FILTER_VALIDATE_BOOLEAN);
+        $this->refreshPinState();
+    }
+
+    public function refreshPinState(): void
+    {
+        $dbPin = Setting::get('settings_app_pin');
+        $envPin = config('finance.pin');
+
+        if (filled($dbPin)) {
+            $this->hasPin = true;
+            $this->currentPinSource = 'app';
+        } elseif (filled($envPin)) {
+            $this->hasPin = true;
+            $this->currentPinSource = 'env';
+        } else {
+            $this->hasPin = false;
+            $this->currentPinSource = 'none';
+        }
     }
 
     public function updatedShowCents(): void
@@ -72,8 +100,8 @@ class SettingsPage extends Component
 
     public function enableBiometrics(): void
     {
-        if (blank(config('finance.pin'))) {
-            $this->addError('biometrics', 'Configure APP_PIN no arquivo .env para manter uma alternativa de acesso.');
+        if (! Setting::hasPin()) {
+            $this->addError('biometrics', 'Defina um PIN de acesso abaixo antes de ativar a biometria para manter uma alternativa de acesso.');
 
             return;
         }
@@ -102,6 +130,52 @@ class SettingsPage extends Component
         $this->biometricsEnabled = false;
         Setting::put('settings_biometrics_enabled', false);
         $this->dispatch('settings-saved', message: 'Acesso biométrico desativado.');
+    }
+
+    public function toggleEditPin(): void
+    {
+        $this->isEditingPin = ! $this->isEditingPin;
+        $this->newPin = '';
+        $this->newPinConfirmation = '';
+        $this->resetErrorBag(['newPin', 'newPinConfirmation']);
+    }
+
+    public function savePin(): void
+    {
+        $this->validate([
+            'newPin' => ['required', 'numeric', 'digits_between:4,8'],
+            'newPinConfirmation' => ['required', 'same:newPin'],
+        ], [
+            'newPin.required' => 'Informe o PIN.',
+            'newPin.numeric' => 'O PIN deve conter apenas números.',
+            'newPin.digits_between' => 'O PIN deve ter entre 4 e 8 dígitos.',
+            'newPinConfirmation.required' => 'Confirme o PIN.',
+            'newPinConfirmation.same' => 'A confirmação do PIN não confere.',
+        ]);
+
+        Setting::setPin($this->newPin);
+        $this->newPin = '';
+        $this->newPinConfirmation = '';
+        $this->isEditingPin = false;
+        $this->resetErrorBag(['newPin', 'newPinConfirmation', 'biometrics']);
+        $this->refreshPinState();
+        $this->dispatch('settings-saved', message: 'PIN de acesso salvo com sucesso.');
+    }
+
+    public function removePin(): void
+    {
+        if ($this->biometricsEnabled) {
+            $this->addError('biometrics', 'Desative a biometria antes de remover o PIN de acesso.');
+
+            return;
+        }
+
+        Setting::setPin(null);
+        $this->newPin = '';
+        $this->newPinConfirmation = '';
+        $this->isEditingPin = false;
+        $this->refreshPinState();
+        $this->dispatch('settings-saved', message: 'PIN de acesso removido.');
     }
 
     public function render()

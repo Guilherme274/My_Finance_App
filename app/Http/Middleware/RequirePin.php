@@ -15,8 +15,7 @@ class RequirePin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $pin = config('finance.pin');
-
+        $hasPin = Setting::hasPin();
         $biometricsEnabled = filter_var(Setting::get('settings_biometrics_enabled', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($request->routeIs('pin.*')) {
@@ -27,7 +26,7 @@ class RequirePin
             return redirect()->guest(route('pin.show'));
         }
 
-        if (blank($pin) || $request->session()->get('pin_ok') === true) {
+        if (! $hasPin || $request->session()->get('pin_ok') === true) {
             return $next($request);
         }
 

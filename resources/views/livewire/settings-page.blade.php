@@ -120,6 +120,60 @@
             </div>
         </div>
 
+        <div class="space-y-3 rounded-xl bg-surface-container p-3">
+            <div class="flex items-start gap-3">
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant">
+                    <span class="material-symbols-outlined">pin</span>
+                </div>
+                <div class="min-w-0 flex-1 space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="text-label-md font-semibold text-on-surface">PIN de acesso</span>
+                        @if ($hasPin)
+                            <span class="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                                {{ $currentPinSource === 'app' ? 'Configurado no app' : 'Definido no .env' }}
+                            </span>
+                        @else
+                            <span class="rounded-full bg-surface-container-high px-2 py-0.5 text-[11px] font-semibold text-on-surface-variant">Desativado</span>
+                        @endif
+                    </div>
+                    <p class="text-body-sm text-on-surface-variant">
+                        Senha numérica (4 a 8 dígitos) para proteger a abertura do aplicativo e servir de alternativa à biometria.
+                    </p>
+                </div>
+                <div class="flex shrink-0 items-center gap-2">
+                    @if ($hasPin && ! $isEditingPin && $currentPinSource === 'app')
+                        <button type="button" wire:click="removePin" wire:confirm="Deseja remover o PIN configurado no app?" class="rounded-full bg-error/15 px-3 py-1.5 text-label-sm font-semibold text-error hover:bg-error/25">
+                            Remover
+                        </button>
+                    @endif
+                    <button type="button" wire:click="toggleEditPin" class="rounded-full bg-surface-container-high px-3 py-1.5 text-label-sm font-semibold text-on-surface hover:text-primary">
+                        {{ $isEditingPin ? 'Cancelar' : ($hasPin ? 'Alterar' : 'Definir PIN') }}
+                    </button>
+                </div>
+            </div>
+
+            @if ($isEditingPin)
+                <form wire:submit="savePin" class="space-y-3 border-t border-outline-variant/20 pt-3">
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div>
+                            <label class="block text-label-sm font-medium text-on-surface">Novo PIN (números)</label>
+                            <input type="password" inputmode="numeric" wire:model="newPin" maxlength="8" placeholder="Ex: 31012026" class="mt-1 w-full rounded-lg bg-surface-container-high px-3 py-2 text-label-md font-semibold text-on-surface outline-none focus:ring-1 focus:ring-primary">
+                            @error('newPin')<p class="mt-1 text-label-sm text-error">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="block text-label-sm font-medium text-on-surface">Confirmar novo PIN</label>
+                            <input type="password" inputmode="numeric" wire:model="newPinConfirmation" maxlength="8" placeholder="Repita o PIN" class="mt-1 w-full rounded-lg bg-surface-container-high px-3 py-2 text-label-md font-semibold text-on-surface outline-none focus:ring-1 focus:ring-primary">
+                            @error('newPinConfirmation')<p class="mt-1 text-label-sm text-error">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" wire:click="toggleEditPin" class="rounded-lg bg-surface-container-high px-3 py-1.5 text-label-sm font-semibold text-on-surface-variant">Cancelar</button>
+                        <button type="submit" class="rounded-lg bg-primary px-4 py-1.5 text-label-sm font-semibold text-surface-container-lowest">Salvar PIN</button>
+                    </div>
+                </form>
+            @endif
+        </div>
+
         <div class="flex items-start gap-3 rounded-xl bg-surface-container p-3">
             <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant"><span class="material-symbols-outlined">fingerprint</span></div>
             <div class="min-w-0 flex-1 space-y-1">

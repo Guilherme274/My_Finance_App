@@ -293,4 +293,59 @@ CSV;
         $this->assertSame('mercadopago', $parsed['brand']);
         $this->assertSame('Pix: Maria Eduarda (Nubank Ag. 1 C. 182429240030)', $parsed['cleanDescription']);
     }
+
+    public function test_pin_resolution_verification_and_settings_management(): void
+    {
+        // 1) Resolução a partir do config/env quando não há PIN no banco
+        Setting::query()->where('key', 'settings_app_pin')->delete();
+        config(['finance.pin' => '31012026']);
+
+        $this->assertTrue(Setting::hasPin());
+        $this->assertSame('31012026', Setting::getPin());
+        $this->assertTrue(Setting::verifyPin('31012026'));
+        $this->assertFalse(Setting::verifyPin('00000000'));
+
+        // 2) Autenticação via rota /pin com PIN correto
+        $this->post('/pin', ['pin' => '31012026'])
+            ->assertRedirect(route('dashboard'))
+            ->assertSessionHas('pin_ok', true);
+
+        // 3) Autenticação via rota /pin com PIN incorreto
+        $this->post('/pin', ['pin' => '99999999'])
+            ->assertSessionHasErrors(['pin']);
+
+        // 4) Gerenciamento do PIN via tela de configurações (Livewire)
+        Livewire::test(\App\Livewire\SettingsPage::class)
+            ->assertSet('hasPin', true)
+            ->assertSet('currentPinSource', 'env')
+            ->call('toggleEditPin')
+            ->assertSet('isEditingPin', true)
+            ->set('newPin', '1234')
+            ->set('newPinConfirmation', '1234')
+            ->call('savePin')
+            ->assertHasNoErrors()
+            ->assertSet('hasPin', true)
+            ->assertSet('currentPinSource', 'app')
+            ->assertDispatched('settings-saved');
+
+        // PIN configurado no banco sobrepõe o .env
+        $this->assertSame('1234', Setting::getPin());
+        $this->assertTrue(Setting::verifyPin('1234'));
+        $this->assertFalse(Setting::verifyPin('31012026'));
+
+        // 5) Remoção do PIN via tela de configurações
+        Livewire::test(\App\Livewire\SettingsPage::class)
+            ->call('removePin')
+            ->assertSet('currentPinSource', 'env');
+
+        // Se remover o config também, fica totalmente desativado
+        config(['finance.pin' => null]);
+        $this->assertFalse(Setting::hasPin());
+        $this->assertNull(Setting::getPin());
+
+        // 6) Tentar ativar biometria sem PIN acusa erro amigável
+        Livewire::test(\App\Livewire\SettingsPage::class)
+            ->call('enableBiometrics')
+            ->assertHasErrors(['biometrics']);
+    }
 }

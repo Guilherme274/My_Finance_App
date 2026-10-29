@@ -16,7 +16,7 @@
                 <button class="btn-primary w-full" type="submit">Desbloquear com biometria</button>
             </form>
         @endif
-        @if (filled(config('finance.pin')))
+        @if (\App\Models\Setting::hasPin())
             <form method="POST" action="{{ route('pin.verify') }}" class="space-y-4">
                 @csrf
                 <div>
@@ -26,6 +26,9 @@
                 </div>
                 <button class="btn-primary w-full">Entrar com PIN</button>
             </form>
+        @elseif (! filter_var(\App\Models\Setting::get('settings_biometrics_enabled', false), FILTER_VALIDATE_BOOLEAN))
+            <p class="text-center text-sm text-slate-400">Nenhum PIN configurado.</p>
+            <a href="{{ route('dashboard') }}" class="btn-primary block text-center">Ir para o Dashboard</a>
         @endif
     </div>
 </body>

@@ -53,7 +53,7 @@ Route::post('/mercado-pago/dicionario', function (Request $request, KnownAccount
 
 Route::view('/pin', 'pin')->name('pin.show');
 Route::post('/pin', function (Request $request) {
-    if (hash_equals((string) config('finance.pin'), (string) $request->input('pin'))) {
+    if (Setting::verifyPin($request->input('pin'))) {
         $request->session()->put('pin_ok', true);
 
         return redirect()->intended(route('dashboard'));
