@@ -164,17 +164,49 @@ class BudgetPage extends Component
             ->orderByDesc('created_at')
             ->get();
 
+        $categories = Category::where('include_in_budget', true)->orderBy('name')->get();
+        $categoriesById = $categories->keyBy('id');
+
         // Apenas transações que entram no orçamento (sem categoria ou categoria com include_in_budget=true)
         $budgetMonthTx = $currentMonthTx->filter(fn ($t) => ! $t->category || $t->category->include_in_budget);
+
+        $txsByCategory = $budgetMonthTx->groupBy(fn ($t) => (string) ($t->category_id ?? '__none__'));
+
+        // Gasto Líquido por Categoria: abate reembolsos/entradas recebidas na mesma categoria
+        $spentByCategory = $txsByCategory->map(function ($items, $catKey) use ($categoriesById) {
+            $cat = $catKey === '__none__' ? null : $categoriesById->get($catKey);
+            if ($cat && $cat->kind === 'income') {
+                return 0;
+            }
+
+            $debits = abs((int) $items->where('amount_cents', '<', 0)->sum('amount_cents'));
+            $credits = (int) $items->where('amount_cents', '>', 0)->sum('amount_cents');
+
+            return max(0, $debits - $credits);
+        });
+
+        $currentExpenseCents = (int) $spentByCategory->sum();
+
+        $currentIncomeCents = (int) $budgetMonthTx->where('amount_cents', '>', 0)
+            ->filter(fn ($t) => ! $t->category || $t->category->kind === 'income')
+            ->sum('amount_cents');
 
         $prevMonthTx = Transaction::query()
             ->inMonth($prevStart->format('Y-m'))
             ->includedInBudget()
             ->get();
 
-        $currentIncomeCents = (int) $budgetMonthTx->where('amount_cents', '>', 0)->sum('amount_cents');
-        $currentExpenseCents = abs((int) $budgetMonthTx->where('amount_cents', '<', 0)->sum('amount_cents'));
-        $prevExpenseCents = abs((int) $prevMonthTx->where('amount_cents', '<', 0)->sum('amount_cents'));
+        $prevTxsByCategory = $prevMonthTx->groupBy(fn ($t) => (string) ($t->category_id ?? '__none__'));
+        $prevExpenseCents = (int) $prevTxsByCategory->sum(function ($items, $catKey) use ($categoriesById) {
+            $cat = $catKey === '__none__' ? null : $categoriesById->get($catKey);
+            if ($cat && $cat->kind === 'income') {
+                return 0;
+            }
+            $debits = abs((int) $items->where('amount_cents', '<', 0)->sum('amount_cents'));
+            $credits = (int) $items->where('amount_cents', '>', 0)->sum('amount_cents');
+
+            return max(0, $debits - $credits);
+        });
 
         $referenceSalaryCents = $this->salaryCents > 0 ? $this->salaryCents : max($currentIncomeCents, 1);
         $salarySurplusCents = $referenceSalaryCents - $currentExpenseCents;
@@ -197,8 +229,22 @@ class BudgetPage extends Component
                 ->inMonth($mStart->format('Y-m'))
                 ->includedInBudget()
                 ->get();
-            $inc = (int) $txs->where('amount_cents', '>', 0)->sum('amount_cents');
-            $exp = abs((int) $txs->where('amount_cents', '<', 0)->sum('amount_cents'));
+
+            $exp = 0;
+            foreach ($txs->groupBy(fn ($t) => (string) ($t->category_id ?? '__none__')) as $catKey => $items) {
+                $c = $catKey === '__none__' ? null : $categoriesById->get($catKey);
+                if ($c && $c->kind === 'income') {
+                    continue;
+                }
+                $d = abs((int) $items->where('amount_cents', '<', 0)->sum('amount_cents'));
+                $cr = (int) $items->where('amount_cents', '>', 0)->sum('amount_cents');
+                $exp += max(0, $d - $cr);
+            }
+
+            $inc = (int) $txs->where('amount_cents', '>', 0)
+                ->filter(fn ($t) => ! $t->category || $t->category->kind === 'income')
+                ->sum('amount_cents');
+
             $maxBarCents = max($maxBarCents, $inc, $exp);
 
             $monthsComparison[] = [
@@ -292,8 +338,18 @@ class BudgetPage extends Component
         $essentialCents = 0;
         $lifestyleCents = 0;
 
-        foreach ($budgetMonthTx->where('amount_cents', '<', 0) as $tx) {
-            $catLower = mb_strtolower($tx->category->name ?? '');
+        foreach ($txsByCategory as $catKey => $items) {
+            $cat = $catKey === '__none__' ? null : $categoriesById->get($catKey);
+            if ($cat && $cat->kind === 'income') {
+                continue;
+            }
+
+            $net = $spentByCategory->get($catKey, 0);
+            if ($net <= 0) {
+                continue;
+            }
+
+            $catLower = mb_strtolower($cat?->name ?? '');
             $isEssential = false;
             foreach ($essentialNames as $kw) {
                 if (str_contains($catLower, $kw)) {
@@ -301,10 +357,11 @@ class BudgetPage extends Component
                     break;
                 }
             }
+
             if ($isEssential) {
-                $essentialCents += abs($tx->amount_cents);
+                $essentialCents += $net;
             } else {
-                $lifestyleCents += abs($tx->amount_cents);
+                $lifestyleCents += $net;
             }
         }
 

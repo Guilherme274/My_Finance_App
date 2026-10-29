@@ -416,6 +416,36 @@ CSV;
             ->assertViewHas('lifestyleTargetCents', 150000) // 30% de 5.000 = 1.500
             ->assertViewHas('investTargetCents', 100000); // 20% de 5.000 = 1.000
 
+        // Testar gasto líquido com reembolso: Educação com saída de 1041,75 e entrada de 1050,00 do pai
+        $catEdu = Category::create([
+            'name' => 'Educação Teste',
+            'kind' => 'expense',
+            'color' => '#6366f1',
+            'include_in_budget' => true,
+        ]);
+
+        Transaction::create([
+            'account_id' => $account->id,
+            'category_id' => $catEdu->id,
+            'date' => '2026-10-06',
+            'description' => 'Unisanta Mensalidade',
+            'amount_cents' => -104175,
+            'source' => 'manual',
+        ]);
+
+        Transaction::create([
+            'account_id' => $account->id,
+            'category_id' => $catEdu->id,
+            'date' => '2026-10-05',
+            'description' => 'Pix Pai Faculdade',
+            'amount_cents' => 105000,
+            'source' => 'manual',
+        ]);
+
+        // A mensalidade de 1041,75 é 100% coberta pelo Pix de 1050,00 do pai, gasto líquido da categoria = 0
+        Livewire::test(\App\Livewire\BudgetPage::class, ['month' => $month])
+            ->assertViewHas('currentExpenseCents', 15000); // continua apenas os 150 do restaurante
+
         // 4) Gerenciamento da flag include_in_budget na tela de Categorias
         Livewire::test(\App\Livewire\Categories::class)
             ->call('create')

@@ -47,37 +47,68 @@ class Dashboard extends Component
 
     public function render()
     {
+        $categoriesById = Category::all()->keyBy('id');
         $monthQuery = fn () => Transaction::query()->inMonth($this->month)->includedInBudget();
 
-        $income = (int) $monthQuery()->where('amount_cents', '>', 0)->sum('amount_cents');
-        $expense = (int) $monthQuery()->where('amount_cents', '<', 0)->sum('amount_cents');
-        $expenseAbs = abs($expense);
+        $monthTxs = $monthQuery()->get();
+        $byCategoryMap = $monthTxs->groupBy(fn ($t) => (string) ($t->category_id ?? '__none__'));
+
+        $categoryExpenses = [];
+        foreach ($byCategoryMap as $catKey => $items) {
+            $category = $catKey === '__none__' ? null : $categoriesById->get($catKey);
+            if ($category && $category->kind === 'income') {
+                continue;
+            }
+
+            $debits = abs((int) $items->where('amount_cents', '<', 0)->sum('amount_cents'));
+            $credits = (int) $items->where('amount_cents', '>', 0)->sum('amount_cents');
+            $net = max(0, $debits - $credits);
+
+            if ($net > 0) {
+                $categoryExpenses[] = [
+                    'category' => $category,
+                    'name' => $category?->name ?? 'Sem categoria',
+                    'color' => $category?->color ?? '#4edea3',
+                    'total' => $net,
+                    'budget' => $category?->monthly_budget_cents,
+                ];
+            }
+        }
+
+        $expenseAbs = (int) collect($categoryExpenses)->sum('total');
+        $expense = -$expenseAbs;
+
+        $income = (int) $monthTxs->where('amount_cents', '>', 0)
+            ->filter(fn ($t) => ! $t->category || $t->category->kind === 'income')
+            ->sum('amount_cents');
 
         $previousMonth = CarbonImmutable::createFromFormat('Y-m-d', $this->month.'-01')->subMonth()->format('Y-m');
         $prevQuery = fn () => Transaction::query()->inMonth($previousMonth)->includedInBudget();
 
-        $previousIncome = (int) $prevQuery()->where('amount_cents', '>', 0)->sum('amount_cents');
-        $previousExpense = abs((int) $prevQuery()->where('amount_cents', '<', 0)->sum('amount_cents'));
+        $prevTxs = $prevQuery()->get();
+        $prevTxsMap = $prevTxs->groupBy(fn ($t) => (string) ($t->category_id ?? '__none__'));
+        $previousExpense = (int) $prevTxsMap->sum(function ($items, $catKey) use ($categoriesById) {
+            $category = $catKey === '__none__' ? null : $categoriesById->get($catKey);
+            if ($category && $category->kind === 'income') {
+                return 0;
+            }
+            $debits = abs((int) $items->where('amount_cents', '<', 0)->sum('amount_cents'));
+            $credits = (int) $items->where('amount_cents', '>', 0)->sum('amount_cents');
+
+            return max(0, $debits - $credits);
+        });
+
+        $previousIncome = (int) $prevTxs->where('amount_cents', '>', 0)
+            ->filter(fn ($t) => ! $t->category || $t->category->kind === 'income')
+            ->sum('amount_cents');
 
         $barColors = ['bg-primary', 'bg-secondary', 'bg-tertiary', 'bg-surface-bright'];
 
-        $byCategory = $monthQuery()
-            ->where('amount_cents', '<', 0)
-            ->select('category_id', DB::raw('SUM(amount_cents) as total'))
-            ->groupBy('category_id')
-            ->get()
-            ->map(function ($row) use ($expenseAbs) {
-                $category = $row->category_id ? Category::find($row->category_id) : null;
-                $total = abs((int) $row->total);
+        $byCategory = collect($categoryExpenses)
+            ->map(function ($item) use ($expenseAbs) {
+                $item['pct'] = $expenseAbs > 0 ? round($item['total'] / $expenseAbs * 100) : 0;
 
-                return [
-                    'category' => $category,
-                    'name' => $category?->name ?? 'Sem categoria',
-                    'color' => $category?->color ?? '#4edea3',
-                    'total' => $total,
-                    'pct' => $expenseAbs > 0 ? round($total / $expenseAbs * 100) : 0,
-                    'budget' => $category?->monthly_budget_cents,
-                ];
+                return $item;
             })
             ->sortByDesc('total')
             ->values()
