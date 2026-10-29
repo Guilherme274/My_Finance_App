@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-container": "#00452e", "on-tertiary-fixed": "#002114", "secondary-fixed": "#68fcbf", "surface-variant": "#31353e", "tertiary-fixed-dim": "#68dba9", "tertiary": "#68dba9", "outline": "#86948a", "on-tertiary-fixed-variant": "#005137", "surface-container": "#1c2028", "on-primary-container": "#00422b", "background": "#0f131c", "on-secondary-fixed": "#002114", "on-secondary-fixed-variant": "#005137", "surface-container-high": "#262a33", "surface-tint": "#4edea3", "primary-container": "#10b981", "surface-bright": "#353942", "primary-fixed-dim": "#4edea3", "on-primary": "#003824", "surface-container-low": "#181c24", "surface-container-lowest": "#0a0e16", "secondary-container": "#00bd85", "on-error-container": "#ffdad6", "inverse-surface": "#dfe2ee", "on-error": "#690005", "surface": "#0f131c", "tertiary-container": "#3eb686", "on-tertiary": "#003825", "on-background": "#dfe2ee", "inverse-primary": "#006c49", "error-container": "#93000a", "tertiary-fixed": "#85f8c4", "surface-dim": "#0f131c", "error": "#ffb4ab", "secondary": "#45dfa4", "on-surface": "#dfe2ee", "on-primary-fixed-variant": "#005236", "outline-variant": "#3c4a42", "secondary-fixed-dim": "#45dfa4", "primary-fixed": "#6ffbbe", "on-secondary": "#003825", "primary": "#4edea3", "surface-container-highest": "#31353e", "on-tertiary-container": "#00422c", "on-primary-fixed": "#002113", "inverse-on-surface": "#2c3039", "on-surface-variant": "#bbcabf" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-md": "1rem", "space-xs": "0.25rem", "margin-desktop": "2rem", "space-lg": "1.5rem", "gutter": "1rem", "margin-tablet": "1.5rem", "gutter-desktop": "1.5rem", "space-sm": "0.5rem", "margin": "1rem", "space-xl": "2rem" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "numerical-display": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "display-lg-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "numerical-display": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }] } } } }</script><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#0f131c;}body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl pt-safe shadow-[0_1px_12px_rgba(0,0,0,0.35)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-xs"><button aria-label="Voltar" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:text-primary hover:bg-surface-container-high transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><div class="flex items-center gap-space-xs"><img alt="Emerald Finance Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfPov0YINL3mu_we1VW-pfXOZqO7rbzCW21KsYnl-4PSlLa5wDD8aWeokXt40z4AqdPvPJz0oq5Hqd1xd93xlQZf7szc2dhiN48Y2hkVS24ahpj7Ebh0BdqfQvwD94n0P-rNOy3CwdPP4ro6yAnyzmvXhxOKJOleEPyv7uMCiQTfM9rJ7U3c2CSacM1B0Xk-5vhn7Pm4LROZ8EJXqmiM-InWcoc31W6ja-2Uc6MK-9ExjkQNhLi02e"/><h1 class="font-title-md text-title-md text-on-surface leading-tight">Nova Transação</h1></div></div><div class="w-11 h-11 flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-primary/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9wHi2u3apVgjBvofU7dYKptUdagPtd7zQjaPKEiRlMyQMEmHgc4pDtJVjbSl0zf0a__SD9DpeNdHJA-1YfLg2syjOuaAnIRs6oqXZ7BT3_N1te1u3Q9ElhIMsoLrl63gURAbioYigJosrTh6XDCatTAo_kg4RDqWnoiNlnrQZ452KDqpIgyj3-YYlMQOT3oC0aJCXeK6XDMzKlmBxTvYTcJJJBowlAL_wBFzCVbu7X9yDz9t6z5K_"/></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-safe bg-surface px-margin"><div class="flex flex-col w-full pb-8">
+<!-- Segmented Type Selector -->
+<div class="flex items-center justify-center mb-space-md">
+<div class="grid grid-cols-3 w-full bg-surface-container-low p-1 rounded-full shadow-inner">
+<button class="py-2 rounded-full font-label-md text-label-md transition-all duration-200 bg-primary-container text-on-primary-container shadow-md flex items-center justify-center gap-1" id="btn-type-expense" onclick="switchType('expense')" type="button">
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+<span>Despesa</span>
+</button>
+<button class="py-2 rounded-full font-label-md text-label-md transition-all duration-200 text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1" id="btn-type-income" onclick="switchType('income')" type="button">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+<span>Receita</span>
+</button>
+<button class="py-2 rounded-full font-label-md text-label-md transition-all duration-200 text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1" id="btn-type-transfer" onclick="switchType('transfer')" type="button">
+<span class="material-symbols-outlined text-[16px]">sync_alt</span>
+<span>Transf.</span>
+</button>
+</div>
+</div>
+<!-- Hero Numeric Value Entry Card -->
+<div class="relative overflow-hidden bg-surface-container rounded-xl p-space-lg shadow-xl mb-space-md flex flex-col items-center justify-center">
+<div class="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-primary/10 blur-2xl pointer-events-none"></div>
+<div class="absolute -bottom-10 -left-10 w-28 h-28 rounded-full bg-secondary/10 blur-2xl pointer-events-none"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-xs">Valor da Compra</span>
+<div class="flex items-baseline justify-center gap-1 my-1">
+<span class="font-title-md text-title-md text-primary font-semibold">R$</span>
+<span class="font-display-lg-mobile text-display-lg-mobile text-on-surface tracking-tight font-bold" id="amount-display">184,50</span>
+</div>
+<!-- Quick Steppers -->
+<div class="flex items-center gap-space-sm mt-space-sm">
+<button class="px-3 py-1 bg-surface-container-high active:bg-surface-bright rounded-full text-on-surface-variant hover:text-primary font-label-sm text-label-sm transition-colors flex items-center gap-0.5 shadow-sm" onclick="adjustAmount(-10)" type="button">
+<span class="material-symbols-outlined text-[14px]">remove</span>10
+      </button>
+<button class="px-3 py-1 bg-surface-container-high active:bg-surface-bright rounded-full text-on-surface-variant hover:text-primary font-label-sm text-label-sm transition-colors flex items-center gap-0.5 shadow-sm" onclick="adjustAmount(10)" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>10
+      </button>
+<button class="px-3 py-1 bg-surface-container-high active:bg-surface-bright rounded-full text-on-surface-variant hover:text-primary font-label-sm text-label-sm transition-colors flex items-center gap-0.5 shadow-sm" onclick="adjustAmount(50)" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>50
+      </button>
+<button class="w-7 h-7 flex items-center justify-center bg-surface-container-high active:bg-surface-bright rounded-full text-on-surface-variant hover:text-primary transition-colors shadow-sm" onclick="toggleCustomKeypad()" title="Editar valor" type="button">
+<span class="material-symbols-outlined text-[16px]">dialpad</span>
+</button>
+</div>
+<!-- Collapsible Mini Numpad (Default Collapsed) -->
+<div class="hidden grid-cols-3 gap-2 w-full pt-4 mt-4 bg-surface-container-low/70 rounded-lg p-3" id="keypad-panel">
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('1')" type="button">1</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('2')" type="button">2</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('3')" type="button">3</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('4')" type="button">4</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('5')" type="button">5</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('6')" type="button">6</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('7')" type="button">7</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('8')" type="button">8</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('9')" type="button">9</button>
+<button class="h-10 bg-surface-container-high rounded-md text-error font-label-md text-label-md active:bg-error-container" onclick="clearAmount()" type="button">C</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface font-title-md text-title-md active:bg-primary-container" onclick="appendDigit('0')" type="button">0</button>
+<button class="h-10 bg-surface-container-high rounded-md text-on-surface flex items-center justify-center active:bg-primary-container" onclick="popDigit()" type="button">
+<span class="material-symbols-outlined text-[18px]">backspace</span>
+</button>
+</div>
+</div>
+<!-- Category Selection Section -->
+<div class="bg-surface-container rounded-xl p-space-md mb-space-md shadow-md">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-title-md text-title-md text-on-surface font-medium">Categoria</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold" id="selected-cat-name">Alimentação</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<!-- 1. Alimentação (Selected Default) -->
+<button class="cat-pill active-cat relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-high text-primary shadow-[0_0_15px_-3px_rgba(78,222,163,0.35)] transition-all" onclick="selectCategory(this, 'Alimentação')" type="button">
+<span class="material-symbols-outlined text-[24px] mb-1">restaurant</span>
+<span class="font-label-sm text-label-sm truncate w-full text-center">Alimentação</span>
+</button>
+<!-- 2. Supermercado -->
+<button class="cat-pill relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all" onclick="selectCategory(this, 'Supermercado')" type="button">
+<span class="material-symbols-outlined text-[24px] mb-1">shopping_cart</span>
+<span class="font-label-sm text-label-sm truncate w-full text-center">Mercado</span>
+</button>
+<!-- 3. Transporte -->
+<button class="cat-pill relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all" onclick="selectCategory(this, 'Transporte')" type="button">
+<span class="material-symbols-outlined text-[24px] mb-1">directions_car</span>
+<span class="font-label-sm text-label-sm truncate w-full text-center">Transporte</span>
+</button>
+<!-- 4. Moradia -->
+<button class="cat-pill relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all" onclick="selectCategory(this, 'Moradia')" type="button">
+<span class="material-symbols-outlined text-[24px] mb-1">home</span>
+<span class="font-label-sm text-label-sm truncate w-full text-center">Moradia</span>
+</button>
+<!-- 5. Saúde -->
+<button class="cat-pill relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all" onclick="selectCategory(this, 'Saúde')" type="button">
+<span class="material-symbols-outlined text-[24px] mb-1">medical_services</span>
+<span class="font-label-sm text-label-sm truncate w-full text-center">Saúde</span>
+</button>
+<!-- 6. Lazer -->
+<button class="cat-pill relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all" onclick="selectCategory(this, 'Lazer')" type="button">
+<span class="material-symbols-outlined text-[24px] mb-1">sports_esports</span>
+<span class="font-label-sm text-label-sm truncate w-full text-center">Lazer</span>
+</button>
+<!-- 7. Educação -->
+<button class="cat-pill relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all" onclick="selectCategory(this, 'Educação')" type="button">
+<span class="material-symbols-outlined text-[24px] mb-1">school</span>
+<span class="font-label-sm text-label-sm truncate w-full text-center">Educação</span>
+</button>
+<!-- 8. Assinaturas -->
+<button class="cat-pill relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all" onclick="selectCategory(this, 'Assinaturas')" type="button">
+<span class="material-symbols-outlined text-[24px] mb-1">subscriptions</span>
+<span class="font-label-sm text-label-sm truncate w-full text-center">Assinaturas</span>
+</button>
+</div>
+</div>
+<!-- Transaction Details & Inputs -->
+<div class="bg-surface-container rounded-xl p-space-md mb-space-md shadow-md space-y-space-md">
+<!-- Description -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1" for="input-desc">Descrição</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant absolute left-3 pointer-events-none">edit_note</span>
+<input class="w-full pl-9 pr-3 py-2.5 bg-surface-container-lowest text-on-surface rounded-lg font-body-md text-body-md focus:outline-none focus:bg-surface-container-high transition-colors" id="input-desc" placeholder="Ex: Mercado, Uber, Restaurante..." type="text" value="Jantar em Família"/>
+</div>
+</div>
+<!-- Date Selection (Today / Yesterday / Custom) -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Data</label>
+<div class="grid grid-cols-3 gap-2">
+<button class="date-chip py-2 px-2 rounded-lg bg-primary/15 text-primary font-label-md text-label-md transition-colors flex items-center justify-center gap-1" onclick="selectDate(this, 'Hoje')" type="button">
+<span class="material-symbols-outlined text-[16px]">today</span>
+<span>Hoje</span>
+</button>
+<button class="date-chip py-2 px-2 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center gap-1" onclick="selectDate(this, 'Ontem')" type="button">
+<span class="material-symbols-outlined text-[16px]">history</span>
+<span>Ontem</span>
+</button>
+<button class="date-chip py-2 px-2 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center gap-1" onclick="selectDate(this, 'Outra')" type="button">
+<span class="material-symbols-outlined text-[16px]">calendar_month</span>
+<span id="label-date-val">24/10</span>
+</button>
+</div>
+</div>
+<!-- Payment Method -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Forma de Pagamento</label>
+<div class="grid grid-cols-3 gap-2">
+<button class="pay-chip py-2.5 px-2 rounded-lg bg-primary/15 text-primary font-label-md text-label-md transition-colors flex flex-col items-center justify-center gap-0.5" onclick="selectPayment(this, 'Cartão Black')" type="button">
+<span class="material-symbols-outlined text-[20px]">credit_card</span>
+<span class="truncate">Cartão Black</span>
+</button>
+<button class="pay-chip py-2.5 px-2 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex flex-col items-center justify-center gap-0.5" onclick="selectPayment(this, 'PIX')" type="button">
+<span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+<span class="truncate">PIX</span>
+</button>
+<button class="pay-chip py-2.5 px-2 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex flex-col items-center justify-center gap-0.5" onclick="selectPayment(this, 'Dinheiro')" type="button">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span class="truncate">Dinheiro</span>
+</button>
+</div>
+</div>
+<!-- Installment / Parcelamento Slider -->
+<div class="bg-surface-container-low p-space-sm rounded-lg" id="installments-section">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">splitscreen</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">Parcelamento</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-title-md text-title-md text-primary font-bold" id="installment-label">3x</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="installment-calc">(3x de R$ 61,50)</span>
+</div>
+</div>
+<input class="w-full accent-primary h-1.5 bg-surface-container-highest rounded-lg cursor-pointer" id="installment-range" max="12" min="1" oninput="updateInstallments(this.value)" type="range" value="3"/>
+<div class="flex justify-between items-center mt-1 text-on-surface-variant font-label-sm text-label-sm">
+<span>À vista</span>
+<span>6x</span>
+<span>12x</span>
+</div>
+</div>
+</div>
+<!-- Receipt Attachment & Visual Preview -->
+<div class="bg-surface-container rounded-xl p-space-md mb-space-lg shadow-md">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[20px]">receipt_long</span>
+<span class="font-title-md text-title-md text-on-surface font-medium">Comprovante / Nota Fiscal</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="receipt-status">1 anexo</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<!-- Attached Image Thumbnail -->
+<div class="relative group w-20 h-20 rounded-lg overflow-hidden bg-surface-container-lowest shrink-0" id="receipt-preview-box">
+<img class="w-full h-full object-cover" data-alt="Close up photo of a restaurant fiscal receipt printed on thermal paper on a dark slate surface, modern clean aesthetic with soft emerald ambient rim lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-7C3R5WIdnHCUuTde6csJ3Ar-T4TOidbhho7UppntVZQJEODCIT1z5LRrWVHFqWUdrSgf-kFGLakNIwRobh4UORfwQstcPNsg1UylqWInxcxQfi7M-kEkmlg7UEq1j3RN08mkg-FXjK2f-WqPYCwHolvnQ9a1ec4hpjHzYTgXPYq-2z6D_Hfft-MSFaKHabovSYJLm4YQQUq7GYT8AZis1QJ0Jh2OxGKoyu5B8QcDb8T68VmE8g9j"/>
+<button class="absolute inset-0 bg-surface-container-lowest/70 opacity-0 group-hover:opacity-100 flex items-center justify-center text-error transition-opacity" onclick="removeReceipt()" title="Remover" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+<!-- Upload Actions / Trigger -->
+<div class="flex-1 flex flex-col justify-center">
+<button class="w-full py-2.5 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-2 mb-1.5" onclick="mockUploadReceipt()" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">add_a_photo</span>
+<span class="font-label-md text-label-md">Tirar foto / Galeria</span>
+</button>
+<span class="font-label-sm text-label-sm text-on-surface-variant/80 text-center">PDF, PNG ou JPG até 5MB</span>
+</div>
+</div>
+</div>
+<!-- Primary CTA Action Button -->
+<div class="w-full">
+<button class="w-full py-3.5 px-4 rounded-xl font-title-md text-title-md font-semibold text-on-primary bg-gradient-to-r from-primary-container via-primary to-secondary-container shadow-[0_0_24px_-4px_rgba(78,222,163,0.4)] active:scale-[0.99] transition-all flex items-center justify-center gap-2" id="btn-save-transaction" onclick="saveTransaction()" type="button">
+<span class="material-symbols-outlined text-[22px]">check_circle</span>
+<span>Salvar Transação</span>
+</button>
+</div>
+<!-- Success Toast Overlay -->
+<div class="fixed bottom-6 left-4 right-4 z-50 transform translate-y-32 opacity-0 pointer-events-none transition-all duration-300 ease-out flex items-center gap-3 p-3.5 bg-surface-container-highest text-on-surface rounded-xl shadow-2xl" id="toast-success">
+<div class="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[22px]">done_all</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-title-md text-title-md text-on-surface leading-tight">Transação Registrada!</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate" id="toast-summary">R$ 184,50 em Alimentação</p>
+</div>
+</div>
+</div>
+<script>
+  let currentAmountCents = 18450;
+  let currentInstallments = 3;
+
+  function formatBRL(cents) {
+    const value = cents / 100;
+    return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function updateDisplay() {
+    const disp = document.getElementById('amount-display');
+    if (disp) {
+      disp.textContent = formatBRL(currentAmountCents);
+    }
+    updateInstallments(currentInstallments);
+  }
+
+  function adjustAmount(valReais) {
+    const deltaCents = valReais * 100;
+    currentAmountCents = Math.max(0, currentAmountCents + deltaCents);
+    updateDisplay();
+  }
+
+  function toggleCustomKeypad() {
+    const pad = document.getElementById('keypad-panel');
+    if (pad) {
+      pad.classList.toggle('hidden');
+      pad.classList.toggle('grid');
+    }
+  }
+
+  function appendDigit(digit) {
+    if (currentAmountCents > 10000000) return;
+    const currentStr = currentAmountCents.toString();
+    const newStr = (currentStr === '0' ? '' : currentStr) + digit;
+    currentAmountCents = parseInt(newStr, 10) || 0;
+    updateDisplay();
+  }
+
+  function popDigit() {
+    const currentStr = currentAmountCents.toString();
+    if (currentStr.length <= 1) {
+      currentAmountCents = 0;
+    } else {
+      currentAmountCents = parseInt(currentStr.slice(0, -1), 10);
+    }
+    updateDisplay();
+  }
+
+  function clearAmount() {
+    currentAmountCents = 0;
+    updateDisplay();
+  }
+
+  function switchType(type) {
+    const expenseBtn = document.getElementById('btn-type-expense');
+    const incomeBtn = document.getElementById('btn-type-income');
+    const transferBtn = document.getElementById('btn-type-transfer');
+    const installSec = document.getElementById('installments-section');
+
+    const defaultClass = 'py-2 rounded-full font-label-md text-label-md transition-all duration-200 text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1';
+    const activeClass = 'py-2 rounded-full font-label-md text-label-md transition-all duration-200 bg-primary-container text-on-primary-container shadow-md flex items-center justify-center gap-1';
+
+    expenseBtn.className = defaultClass;
+    incomeBtn.className = defaultClass;
+    transferBtn.className = defaultClass;
+
+    if (type === 'expense') {
+      expenseBtn.className = activeClass;
+      if (installSec) installSec.classList.remove('hidden');
+    } else if (type === 'income') {
+      incomeBtn.className = activeClass;
+      if (installSec) installSec.classList.add('hidden');
+    } else {
+      transferBtn.className = activeClass;
+      if (installSec) installSec.classList.add('hidden');
+    }
+  }
+
+  function selectCategory(el, name) {
+    const allPills = document.querySelectorAll('.cat-pill');
+    allPills.forEach(pill => {
+      pill.className = 'cat-pill relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all';
+    });
+    el.className = 'cat-pill active-cat relative flex flex-col items-center justify-center py-2.5 px-1 rounded-lg bg-surface-container-high text-primary shadow-[0_0_15px_-3px_rgba(78,222,163,0.35)] transition-all';
+    
+    const label = document.getElementById('selected-cat-name');
+    if (label) label.textContent = name;
+  }
+
+  function selectDate(el, name) {
+    const allDates = document.querySelectorAll('.date-chip');
+    allDates.forEach(btn => {
+      btn.className = 'date-chip py-2 px-2 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center gap-1';
+    });
+    el.className = 'date-chip py-2 px-2 rounded-lg bg-primary/15 text-primary font-label-md text-label-md transition-colors flex items-center justify-center gap-1';
+  }
+
+  function selectPayment(el, name) {
+    const allPays = document.querySelectorAll('.pay-chip');
+    allPays.forEach(btn => {
+      btn.className = 'pay-chip py-2.5 px-2 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors flex flex-col items-center justify-center gap-0.5';
+    });
+    el.className = 'pay-chip py-2.5 px-2 rounded-lg bg-primary/15 text-primary font-label-md text-label-md transition-colors flex flex-col items-center justify-center gap-0.5';
+
+    const installSec = document.getElementById('installments-section');
+    if (installSec) {
+      if (name === 'Cartão Black') {
+        installSec.classList.remove('opacity-40', 'pointer-events-none');
+      } else {
+        installSec.classList.add('opacity-40', 'pointer-events-none');
+      }
+    }
+  }
+
+  function updateInstallments(val) {
+    currentInstallments = parseInt(val, 10);
+    const range = document.getElementById('installment-range');
+    if (range && range.value !== val) range.value = val;
+
+    const lbl = document.getElementById('installment-label');
+    const calc = document.getElementById('installment-calc');
+
+    if (currentInstallments <= 1) {
+      if (lbl) lbl.textContent = '1x';
+      if (calc) calc.textContent = '(À vista)';
+    } else {
+      const partCents = Math.round(currentAmountCents / currentInstallments);
+      if (lbl) lbl.textContent = currentInstallments + 'x';
+      if (calc) calc.textContent = '(' + currentInstallments + 'x de R$ ' + formatBRL(partCents) + ')';
+    }
+  }
+
+  function removeReceipt() {
+    const box = document.getElementById('receipt-preview-box');
+    const status = document.getElementById('receipt-status');
+    if (box) box.classList.add('hidden');
+    if (status) status.textContent = 'Nenhum anexo';
+  }
+
+  function mockUploadReceipt() {
+    const box = document.getElementById('receipt-preview-box');
+    const status = document.getElementById('receipt-status');
+    if (box) box.classList.remove('hidden');
+    if (status) status.textContent = '1 anexo';
+  }
+
+  function saveTransaction() {
+    const toast = document.getElementById('toast-success');
+    const desc = document.getElementById('input-desc')?.value || 'Transação';
+    const cat = document.getElementById('selected-cat-name')?.textContent || 'Geral';
+    const sum = document.getElementById('toast-summary');
+
+    if (sum) {
+      sum.textContent = 'R$ ' + formatBRL(currentAmountCents) + ' • ' + desc + ' (' + cat + ')';
+    }
+
+    if (toast) {
+      toast.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3200);
+    }
+  }
+
+  // Initialize calculations
+  updateDisplay();
+</script></main></body></html>

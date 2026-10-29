@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-container": "#00452e", "on-tertiary-fixed": "#002114", "secondary-fixed": "#68fcbf", "surface-variant": "#31353e", "tertiary-fixed-dim": "#68dba9", "tertiary": "#68dba9", "outline": "#86948a", "on-tertiary-fixed-variant": "#005137", "surface-container": "#1c2028", "on-primary-container": "#00422b", "background": "#0f131c", "on-secondary-fixed": "#002114", "on-secondary-fixed-variant": "#005137", "surface-container-high": "#262a33", "surface-tint": "#4edea3", "primary-container": "#10b981", "surface-bright": "#353942", "primary-fixed-dim": "#4edea3", "on-primary": "#003824", "surface-container-low": "#181c24", "surface-container-lowest": "#0a0e16", "secondary-container": "#00bd85", "on-error-container": "#ffdad6", "inverse-surface": "#dfe2ee", "on-error": "#690005", "surface": "#0f131c", "tertiary-container": "#3eb686", "on-tertiary": "#003825", "on-background": "#dfe2ee", "inverse-primary": "#006c49", "error-container": "#93000a", "tertiary-fixed": "#85f8c4", "surface-dim": "#0f131c", "error": "#ffb4ab", "secondary": "#45dfa4", "on-surface": "#dfe2ee", "on-primary-fixed-variant": "#005236", "outline-variant": "#3c4a42", "secondary-fixed-dim": "#45dfa4", "primary-fixed": "#6ffbbe", "on-secondary": "#003825", "primary": "#4edea3", "surface-container-highest": "#31353e", "on-tertiary-container": "#00422c", "on-primary-fixed": "#002113", "inverse-on-surface": "#2c3039", "on-surface-variant": "#bbcabf" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-md": "1rem", "space-xs": "0.25rem", "margin-desktop": "2rem", "space-lg": "1.5rem", "gutter": "1rem", "margin-tablet": "1.5rem", "gutter-desktop": "1.5rem", "space-sm": "0.5rem", "margin": "1rem", "space-xl": "2rem" }, "fontFamily": { "headline-lg": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "numerical-display": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "display-lg-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "numerical-display": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }] } } } }</script><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#0f131c;}body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl pt-safe shadow-[0_1px_12px_rgba(0,0,0,0.35)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Emerald Finance Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfPov0YINL3mu_we1VW-pfXOZqO7rbzCW21KsYnl-4PSlLa5wDD8aWeokXt40z4AqdPvPJz0oq5Hqd1xd93xlQZf7szc2dhiN48Y2hkVS24ahpj7Ebh0BdqfQvwD94n0P-rNOy3CwdPP4ro6yAnyzmvXhxOKJOleEPyv7uMCiQTfM9rJ7U3c2CSacM1B0Xk-5vhn7Pm4LROZ8EJXqmiM-InWcoc31W6ja-2Uc6MK-9ExjkQNhLi02e"/><div class="flex flex-col"><span class="font-label-sm text-label-sm text-primary tracking-wider uppercase font-semibold">Emerald</span><span class="font-title-md text-title-md text-on-surface leading-tight">Calendário</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Notificações" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors relative"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-primary ring-2 ring-surface"></span></button><div class="w-11 h-11 flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-primary/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9wHi2u3apVgjBvofU7dYKptUdagPtd7zQjaPKEiRlMyQMEmHgc4pDtJVjbSl0zf0a__SD9DpeNdHJA-1YfLg2syjOuaAnIRs6oqXZ7BT3_N1te1u3Q9ElhIMsoLrl63gURAbioYigJosrTh6XDCatTAo_kg4RDqWnoiNlnrQZ452KDqpIgyj3-YYlMQOT3oC0aJCXeK6XDMzKlmBxTvYTcJJJBowlAL_wBFzCVbu7X9yDz9t6z5K_"/></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface px-margin"><div class="flex flex-col w-full gap-space-md">
+<!-- Navegação de Mês & Filtro Superior -->
+<section class="bg-surface-container-low rounded-xl p-space-md shadow-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<button aria-label="Mês anterior" class="w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-primary flex items-center justify-center transition-transform active:scale-90" id="prev-month-btn">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<div class="flex items-center gap-1.5 px-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">calendar_month</span>
+<span class="font-headline-md text-headline-md text-on-surface tracking-tight" id="current-month-display">Outubro 2024</span>
+</div>
+<button aria-label="Próximo mês" class="w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-primary flex items-center justify-center transition-transform active:scale-90" id="next-month-btn">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+<!-- Pill de Filtro Rápido -->
+<div class="flex bg-surface-container-lowest p-1 rounded-full gap-1">
+<button class="filter-tab px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-primary text-on-primary font-semibold transition-all shadow-sm" data-filter="despesas">
+          Despesas
+        </button>
+<button class="filter-tab px-space-sm py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all" data-filter="entradas">
+          Entradas
+        </button>
+<button class="filter-tab px-space-sm py-1 rounded-full font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-all" data-filter="vencimentos">
+          Faturas
+        </button>
+</div>
+</div>
+<!-- Indicadores Sintéticos de Métricas -->
+<div class="grid grid-cols-2 gap-space-xs pt-space-xs">
+<div class="bg-surface-container/70 rounded-lg p-space-sm flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Acumulado</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-title-md text-title-md text-error font-bold">R$ 6.320,40</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/ 31d</span>
+</div>
+</div>
+<div class="bg-surface-container/70 rounded-lg p-space-sm flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Média por Dia</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-title-md text-title-md text-tertiary font-bold">R$ 203,80</span>
+<span class="font-label-sm text-label-sm text-primary flex items-center">
+<span class="material-symbols-outlined text-[14px]">trending_down</span>-4%
+          </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Calendário Interativo -->
+<section class="bg-surface-container-low rounded-xl p-space-md shadow-md flex flex-col gap-space-sm">
+<!-- Cabeçalho dos Dias da Semana -->
+<div class="grid grid-cols-7 text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">SEG</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">TER</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">QUA</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">QUI</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">SEX</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">SÁB</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">DOM</span>
+</div>
+<!-- Grid de Dias (Outubro 2024: 01 Terça-feira) -->
+<div class="grid grid-cols-7 gap-1.5 text-center" id="calendar-days-grid">
+<!-- Dia residual setembro -->
+<div class="h-11 rounded-lg flex flex-col items-center justify-center opacity-30 text-on-surface-variant">
+<span class="font-body-sm text-body-sm">30</span>
+</div>
+<!-- Dias de Outubro -->
+<!-- 01: gasto baixo -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="1" data-val="64.00">
+<span class="font-body-sm text-body-sm font-medium">1</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<!-- 02: sem gasto -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/20 hover:bg-surface-container transition-all" data-count="0" data-day="2" data-val="0.00">
+<span class="font-body-sm text-body-sm text-on-surface-variant">2</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-0.5"></span>
+</button>
+<!-- 03: médio -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="2" data-day="3" data-val="185.00">
+<span class="font-body-sm text-body-sm font-medium">3</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim mt-0.5"></span>
+</button>
+<!-- 04: alto -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="4" data-day="4" data-val="520.00">
+<span class="font-body-sm text-body-sm font-medium">4</span>
+<span class="w-1.5 h-1.5 rounded-full bg-error mt-0.5"></span>
+</button>
+<!-- 05: baixo -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="5" data-val="42.50">
+<span class="font-body-sm text-body-sm font-medium">5</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<!-- 06: sem gasto -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/20 hover:bg-surface-container transition-all" data-count="0" data-day="6" data-val="0.00">
+<span class="font-body-sm text-body-sm text-on-surface-variant">6</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-0.5"></span>
+</button>
+<!-- 07 a 13 -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="2" data-day="7" data-val="110.00">
+<span class="font-body-sm text-body-sm font-medium">7</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="8" data-val="98.00">
+<span class="font-body-sm text-body-sm font-medium">8</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="2" data-day="9" data-val="230.00">
+<span class="font-body-sm text-body-sm font-medium">9</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="5" data-day="10" data-val="780.00">
+<span class="font-body-sm text-body-sm font-medium">10</span>
+<span class="w-1.5 h-1.5 rounded-full bg-error mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="11" data-val="32.00">
+<span class="font-body-sm text-body-sm font-medium">11</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="3" data-day="12" data-val="215.00">
+<span class="font-body-sm text-body-sm font-medium">12</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/20 hover:bg-surface-container transition-all" data-count="0" data-day="13" data-val="0.00">
+<span class="font-body-sm text-body-sm text-on-surface-variant">13</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-0.5"></span>
+</button>
+<!-- 14 a 20 (15 é o dia ativo selecionado) -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="14" data-val="90.00">
+<span class="font-body-sm text-body-sm font-medium">14</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<!-- 15 de Outubro (ATIVO) -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-primary text-on-primary font-bold shadow-md shadow-primary/30 ring-0 transition-all scale-105" data-count="3" data-day="15" data-val="342.00" id="day-15">
+<span class="font-body-sm text-body-sm font-bold text-on-primary">15</span>
+<span class="w-1.5 h-1.5 rounded-full bg-on-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="2" data-day="16" data-val="145.00">
+<span class="font-body-sm text-body-sm font-medium">16</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="3" data-day="17" data-val="410.00">
+<span class="font-body-sm text-body-sm font-medium">17</span>
+<span class="w-1.5 h-1.5 rounded-full bg-error mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="18" data-val="120.00">
+<span class="font-body-sm text-body-sm font-medium">18</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="3" data-day="19" data-val="380.00">
+<span class="font-body-sm text-body-sm font-medium">19</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/20 hover:bg-surface-container transition-all" data-count="0" data-day="20" data-val="0.00">
+<span class="font-body-sm text-body-sm text-on-surface-variant">20</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-0.5"></span>
+</button>
+<!-- 21 a 27 -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="21" data-val="75.00">
+<span class="font-body-sm text-body-sm font-medium">21</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="4" data-day="22" data-val="630.00">
+<span class="font-body-sm text-body-sm font-medium">22</span>
+<span class="w-1.5 h-1.5 rounded-full bg-error mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="2" data-day="23" data-val="115.00">
+<span class="font-body-sm text-body-sm font-medium">23</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="2" data-day="24" data-val="190.00">
+<span class="font-body-sm text-body-sm font-medium">24</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="6" data-day="25" data-val="840.00">
+<span class="font-body-sm text-body-sm font-medium">25</span>
+<span class="w-1.5 h-1.5 rounded-full bg-error mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="26" data-val="95.00">
+<span class="font-body-sm text-body-sm font-medium">26</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/20 hover:bg-surface-container transition-all" data-count="0" data-day="27" data-val="0.00">
+<span class="font-body-sm text-body-sm text-on-surface-variant">27</span>
+<span class="w-1.5 h-1.5 rounded-full bg-transparent mt-0.5"></span>
+</button>
+<!-- 28 a 31 -->
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="2" data-day="28" data-val="210.00">
+<span class="font-body-sm text-body-sm font-medium">28</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="1" data-day="29" data-val="55.00">
+<span class="font-body-sm text-body-sm font-medium">29</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="2" data-day="30" data-val="135.00">
+<span class="font-body-sm text-body-sm font-medium">30</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-0.5"></span>
+</button>
+<button class="cal-day h-11 rounded-lg flex flex-col items-center justify-center bg-surface-container/40 hover:bg-surface-container transition-all" data-count="4" data-day="31" data-val="490.00">
+<span class="font-body-sm text-body-sm font-medium">31</span>
+<span class="w-1.5 h-1.5 rounded-full bg-error mt-0.5"></span>
+</button>
+<!-- Resíduos Novembro -->
+<div class="h-11 rounded-lg flex flex-col items-center justify-center opacity-30 text-on-surface-variant">
+<span class="font-body-sm text-body-sm">1</span>
+</div>
+<div class="h-11 rounded-lg flex flex-col items-center justify-center opacity-30 text-on-surface-variant">
+<span class="font-body-sm text-body-sm">2</span>
+</div>
+<div class="h-11 rounded-lg flex flex-col items-center justify-center opacity-30 text-on-surface-variant">
+<span class="font-body-sm text-body-sm">3</span>
+</div>
+</div>
+<!-- Legenda de Intensidade Térmica dos Gastos -->
+<div class="flex items-center justify-between pt-space-xs px-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>Até R$ 150</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></span>
+<span>R$ 150 - R$ 350</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>Acima R$ 350</span>
+</div>
+</div>
+</section>
+<!-- Seção Deslizante: Detalhamento do Dia -->
+<section class="bg-surface-container-low rounded-xl p-space-md shadow-lg flex flex-col gap-space-sm relative">
+<div class="flex items-center justify-between pb-space-xs">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-semibold">Detalhamento Cronológico</span>
+<h2 class="font-title-md text-title-md text-on-surface flex items-center gap-1.5 mt-0.5" id="selected-day-title">
+<span>15 de Outubro</span>
+<span class="text-on-surface-variant font-normal font-body-sm text-body-sm">(Terça-feira)</span>
+</h2>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight block" id="selected-day-total">R$ 342,00</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="selected-day-count">3 transações</span>
+</div>
+</div>
+<!-- Lista de Compras do Dia -->
+<div class="flex flex-col gap-space-xs" id="transaction-list">
+<!-- Item 1: Supermercado -->
+<div class="flex items-center justify-between p-space-sm bg-surface-container rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md text-on-surface font-semibold truncate">Pão de Açúcar</span>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span>Alimentação</span>
+<span>•</span>
+<span>18:42</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0 pl-space-xs">
+<span class="font-title-md text-title-md text-error font-bold">- R$ 246,80</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Crédito Emerald</span>
+</div>
+</div>
+<!-- Item 2: Farmácia -->
+<div class="flex items-center justify-between p-space-sm bg-surface-container rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed/20 text-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">medication</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md text-on-surface font-semibold truncate">Drogaria Raia</span>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span>Saúde</span>
+<span>•</span>
+<span>13:15</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0 pl-space-xs">
+<span class="font-title-md text-title-md text-error font-bold">- R$ 68,90</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Débito à vista</span>
+</div>
+</div>
+<!-- Item 3: Transporte -->
+<div class="flex items-center justify-between p-space-sm bg-surface-container rounded-lg hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-full bg-surface-variant text-on-surface flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">local_taxi</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md text-on-surface font-semibold truncate">Uber Trip</span>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span>Mobilidade</span>
+<span>•</span>
+<span>08:24</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0 pl-space-xs">
+<span class="font-title-md text-title-md text-error font-bold">- R$ 26,30</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pix</span>
+</div>
+</div>
+</div>
+<!-- Mini Banner Educativo / Dica do Dia -->
+<div class="mt-space-xs p-space-sm bg-surface-container-highest/60 rounded-lg flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">insights</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex-1">
+        Neste dia você gastou <strong class="text-on-surface">67% acima</strong> da sua média diária usual devido às compras de mantimentos.
+      </p>
+</div>
+</section>
+</div>
+<script>
+  (function initFinancialCalendar() {
+    const days = document.querySelectorAll('.cal-day');
+    const titleEl = document.getElementById('selected-day-title');
+    const totalEl = document.getElementById('selected-day-total');
+    const countEl = document.getElementById('selected-day-count');
+    const listEl = document.getElementById('transaction-list');
+    const filterTabs = document.querySelectorAll('.filter-tab');
+
+    // Exemplos dinâmicos para simular clique em outros dias
+    const mockData = {
+      1: {
+        total: 'R$ 64,00',
+        count: '1 transação',
+        items: [
+          { name: 'Padaria Bella', cat: 'Alimentação', time: '09:12', icon: 'bakery_dining', val: '- R$ 64,00', payment: 'Débito' }
+        ]
+      },
+      4: {
+        total: 'R$ 520,00',
+        count: '4 transações',
+        items: [
+          { name: 'Posto Shell', cat: 'Combustível', time: '18:10', icon: 'local_gas_station', val: '- R$ 280,00', payment: 'Crédito' },
+          { name: 'Almoço Executivo', cat: 'Refeição', time: '12:45', icon: 'restaurant', val: '- R$ 85,00', payment: 'Pix' },
+          { name: 'Livraria Cultura', cat: 'Lazer', time: '15:20', icon: 'menu_book', val: '- R$ 115,00', payment: 'Crédito' },
+          { name: 'Café Starbucks', cat: 'Cafeteria', time: '16:40', icon: 'coffee', val: '- R$ 40,00', payment: 'Apple Pay' }
+        ]
+      },
+      15: {
+        total: 'R$ 342,00',
+        count: '3 transações',
+        items: [
+          { name: 'Pão de Açúcar', cat: 'Alimentação', time: '18:42', icon: 'shopping_cart', val: '- R$ 246,80', payment: 'Crédito Emerald' },
+          { name: 'Drogaria Raia', cat: 'Saúde', time: '13:15', icon: 'medication', val: '- R$ 68,90', payment: 'Débito à vista' },
+          { name: 'Uber Trip', cat: 'Mobilidade', time: '08:24', icon: 'local_taxi', val: '- R$ 26,30', payment: 'Pix' }
+        ]
+      }
+    };
+
+    days.forEach(dayBtn => {
+      dayBtn.addEventListener('click', () => {
+        // Remove destaque anterior
+        days.forEach(d => {
+          d.classList.remove('bg-primary', 'text-on-primary', 'shadow-md', 'shadow-primary/30', 'scale-105');
+          const daySpan = d.querySelector('span:first-child');
+          const dotSpan = d.querySelector('span:last-child');
+          if (daySpan) {
+            daySpan.classList.remove('font-bold', 'text-on-primary');
+            daySpan.classList.add('font-medium');
+          }
+          if (dotSpan && dotSpan.dataset.originalBg) {
+            dotSpan.className = dotSpan.dataset.originalBg;
+          }
+        });
+
+        // Aplica destaque atual
+        dayBtn.classList.add('bg-primary', 'text-on-primary', 'shadow-md', 'shadow-primary/30', 'scale-105');
+        const daySpan = dayBtn.querySelector('span:first-child');
+        const dotSpan = dayBtn.querySelector('span:last-child');
+        if (daySpan) {
+          daySpan.classList.remove('font-medium');
+          daySpan.classList.add('font-bold', 'text-on-primary');
+        }
+        if (dotSpan) {
+          if (!dotSpan.dataset.originalBg) dotSpan.dataset.originalBg = dotSpan.className;
+          dotSpan.className = 'w-1.5 h-1.5 rounded-full bg-on-primary mt-0.5';
+        }
+
+        const dayNum = dayBtn.getAttribute('data-day');
+        titleEl.innerHTML = `<span>${dayNum} de Outubro</span> <span class="text-on-surface-variant font-normal font-body-sm text-body-sm">(Outubro 2024)</span>`;
+
+        const data = mockData[dayNum] || {
+          total: 'R$ ' + (dayBtn.getAttribute('data-val') || '0,00'),
+          count: (dayBtn.getAttribute('data-count') || '0') + ' transações',
+          items: [
+            { name: 'Despesa Avulsa', cat: 'Geral', time: '14:00', icon: 'receipt_long', val: '- R$ ' + (dayBtn.getAttribute('data-val') || '0,00'), payment: 'Cartão' }
+          ]
+        };
+
+        totalEl.textContent = data.total;
+        countEl.textContent = data.count;
+
+        if (parseInt(dayBtn.getAttribute('data-count') || '0') === 0) {
+          listEl.innerHTML = `
+            <div class="py-space-lg text-center text-on-surface-variant flex flex-col items-center">
+              <span class="material-symbols-outlined text-[32px] text-primary mb-1">sentiment_very_satisfied</span>
+              <p class="font-body-md text-body-md text-on-surface">Nenhum gasto registrado!</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">Dia econômico de foco total na sua meta.</p>
+            </div>
+          `;
+        } else {
+          listEl.innerHTML = data.items.map(it => `
+            <div class="flex items-center justify-between p-space-sm bg-surface-container rounded-lg hover:bg-surface-container-high transition-colors">
+              <div class="flex items-center gap-space-sm min-w-0">
+                <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[20px]">${it.icon}</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="font-title-md text-title-md text-on-surface font-semibold truncate">${it.name}</span>
+                  <div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+                    <span>${it.cat}</span>
+                    <span>•</span>
+                    <span>${it.time}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col items-end shrink-0 pl-space-xs">
+                <span class="font-title-md text-title-md text-error font-bold">${it.val}</span>
+                <span class="font-label-sm text-label-sm text-on-surface-variant">${it.payment}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+      });
+    });
+
+    // Filtros de visualização
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => {
+          t.classList.remove('bg-primary', 'text-on-primary', 'font-semibold', 'shadow-sm');
+          t.classList.add('text-on-surface-variant');
+        });
+        tab.classList.add('bg-primary', 'text-on-primary', 'font-semibold', 'shadow-sm');
+        tab.classList.remove('text-on-surface-variant');
+      });
+    });
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-4px_24px_rgba(0,0,0,0.5)]" data-active-classes="text-primary font-medium"><div class="relative flex items-center justify-around h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="inicio" href="#"><span class="material-symbols-outlined text-[22px]">dashboard</span><span class="font-label-sm text-label-sm mt-0.5">Início</span></a><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="calendario" href="#"><span class="material-symbols-outlined text-[22px]">calendar_today</span><span class="font-label-sm text-label-sm mt-0.5">Agenda</span></a><div class="relative -top-5 flex items-center justify-center"><a aria-label="Adicionar Transação" class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary-container via-primary to-secondary text-on-primary flex items-center justify-center shadow-[0_0_24px_rgba(78,222,163,0.45)] hover:scale-105 active:scale-95 transition-transform" data-path="nova-transacao" href="#"><span class="material-symbols-outlined text-[28px] font-bold">add</span></a></div><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="orcamento" href="#"><span class="material-symbols-outlined text-[22px]">pie_chart</span><span class="font-label-sm text-label-sm mt-0.5">Orçamento</span></a><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-colors" data-path="investimentos" href="#"><span class="material-symbols-outlined text-[22px]">trending_up</span><span class="font-label-sm text-label-sm mt-0.5">Investir</span></a></div></nav></body></html>
