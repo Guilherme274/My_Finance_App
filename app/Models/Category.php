@@ -17,11 +17,11 @@ class Category extends Model
         'transfer' => 'Transferência',
     ];
 
-    protected $fillable = ['name', 'kind', 'color', 'icon', 'parent_id', 'monthly_budget_cents'];
+    protected $fillable = ['name', 'kind', 'color', 'icon', 'parent_id', 'monthly_budget_cents', 'monthly_budget_percent'];
 
     protected function casts(): array
     {
-        return ['monthly_budget_cents' => 'integer'];
+        return ['monthly_budget_cents' => 'integer', 'monthly_budget_percent' => 'float'];
     }
 
     public function parent(): BelongsTo

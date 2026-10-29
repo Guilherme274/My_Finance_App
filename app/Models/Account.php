@@ -39,7 +39,9 @@ class Account extends Model
 
     public function balanceCents(): int
     {
-        return $this->initial_balance_cents + (int) $this->transactions()->sum('amount_cents');
+        return $this->initial_balance_cents + (int) $this->transactions()
+            ->whereDate('date', '<=', now()->toDateString())
+            ->sum('amount_cents');
     }
 
     public function typeLabel(): string
