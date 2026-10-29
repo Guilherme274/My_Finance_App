@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('NATIVEPHP_RUNNING') ? 'sqlite' : env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------

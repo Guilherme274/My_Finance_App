@@ -25,3 +25,9 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+*.apk
+/native
+nativephp.lock
+/*.png
+/*.html
+

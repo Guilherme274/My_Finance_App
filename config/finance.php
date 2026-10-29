@@ -40,4 +40,11 @@ return [
         'timeout' => (int) env('MERCADOPAGO_TIMEOUT', 20),
     ],
 
+    'pluggy' => [
+        'base_url' => env('PLUGGY_BASE_URL', 'https://api.pluggy.ai'),
+        'client_id' => env('PLUGGY_CLIENT_ID'),
+        'client_secret' => env('PLUGGY_CLIENT_SECRET'),
+        'timeout' => (int) env('PLUGGY_TIMEOUT', 25),
+    ],
+
 ];

@@ -10,10 +10,12 @@
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.4",
-        "nativephp/mobile": "^4.6"
+        "nativephp/mobile": "^4.6",
+        "smronju/nativephp-biometrics": "^1.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "laravel/boost": "^2.10",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",
@@ -45,6 +47,10 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "@php artisan dev"
+        ],
+        "apk": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan finance:apk"
         ],
         "test": [
             "@php artisan config:clear --ansi @no_additional_args",
