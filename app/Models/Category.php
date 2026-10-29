@@ -17,7 +17,7 @@ class Category extends Model
         'transfer' => 'Transferência',
     ];
 
-    protected $fillable = ['name', 'kind', 'color', 'icon', 'parent_id', 'monthly_budget_cents', 'monthly_budget_percent', 'include_in_budget'];
+    protected $fillable = ['name', 'kind', 'color', 'icon', 'parent_id', 'monthly_budget_cents', 'monthly_budget_percent', 'include_in_budget', 'budget_allocation'];
 
     protected function casts(): array
     {
@@ -26,6 +26,26 @@ class Category extends Model
             'monthly_budget_percent' => 'float',
             'include_in_budget' => 'boolean',
         ];
+    }
+
+    /**
+     * Retorna a classificação na regra 50/30/20: essential, lifestyle ou investment.
+     */
+    public function getAllocationGroup(): string
+    {
+        if ($this->budget_allocation) {
+            return $this->budget_allocation;
+        }
+
+        $essentialNames = ['alimentação', 'mercado', 'moradia', 'saúde', 'transporte', 'educação', 'contas'];
+        $nameLower = mb_strtolower($this->name);
+        foreach ($essentialNames as $kw) {
+            if (str_contains($nameLower, $kw)) {
+                return 'essential';
+            }
+        }
+
+        return 'lifestyle';
     }
 
     public function parent(): BelongsTo

@@ -36,12 +36,14 @@ class Categories extends Component
 
     public bool $includeInBudget = true;
 
+    public ?string $budgetAllocation = null;
+
     public string $newPattern = '';
 
     public function create(): void
     {
         $this->resetValidation();
-        $this->reset(['editingId', 'name', 'kind', 'color', 'icon', 'budget', 'budgetPercent', 'newPattern']);
+        $this->reset(['editingId', 'name', 'kind', 'color', 'icon', 'budget', 'budgetPercent', 'budgetAllocation', 'newPattern']);
         $this->includeInBudget = true;
         $this->showForm = true;
     }
@@ -62,6 +64,7 @@ class Categories extends Component
         $this->kind = $c->kind;
         $this->color = $c->color;
         $this->includeInBudget = (bool) $c->include_in_budget;
+        $this->budgetAllocation = $c->budget_allocation;
         $icon = (string) $c->icon;
         if (! preg_match('/^[a-z0-9_]+$/', $icon)) {
             $icon = MaterialIcon::forCategory($c->name, $c->kind);
@@ -82,6 +85,7 @@ class Categories extends Component
             'icon' => ['nullable', 'string', 'max:16'],
             'budgetPercent' => ['nullable', 'numeric', 'min:0.01', 'max:100'],
             'includeInBudget' => ['boolean'],
+            'budgetAllocation' => ['nullable', Rule::in(['essential', 'lifestyle', 'investment'])],
         ]);
 
         $budget = null;
@@ -108,6 +112,7 @@ class Categories extends Component
             'monthly_budget_cents' => $this->budgetPercent !== '' ? null : $budget,
             'monthly_budget_percent' => $this->budgetPercent !== '' ? (float) str_replace(',', '.', $this->budgetPercent) : null,
             'include_in_budget' => $this->includeInBudget,
+            'budget_allocation' => $this->budgetAllocation ?: null,
         ]);
 
         $this->editingId = $category->id;

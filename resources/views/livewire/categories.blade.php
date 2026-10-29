@@ -30,6 +30,10 @@
                                         <span class="text-xs text-slate-400">{{ $c->transactions_count }} lançamento(s)</span>
                                         @if (! $c->include_in_budget)
                                             <span class="rounded bg-slate-800/80 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 border border-slate-700/50">Fora do orçamento</span>
+                                        @elseif ($c->kind === 'expense')
+                                            <span class="rounded bg-slate-800/60 px-1.5 py-0.5 text-[10px] font-semibold text-primary/80 border border-primary/20">
+                                                {{ $c->getAllocationGroup() === 'essential' ? '50% Essencial' : ($c->getAllocationGroup() === 'investment' ? '20% Invest.' : '30% Estilo') }}
+                                            </span>
                                         @endif
                                     </div>
                                 </span>
@@ -85,6 +89,15 @@
                             <label class="label">Ou percentual da renda mensal</label>
                             <input type="number" min="0.01" max="100" step="0.01" inputmode="decimal" wire:model="budgetPercent" placeholder="ex.: 15" class="input">
                             @error('budgetPercent') <p class="error">Informe um percentual entre 0 e 100.</p> @enderror
+                        </div>
+                        <div>
+                            <label class="label">Regra 50 / 30 / 20</label>
+                            <select wire:model="budgetAllocation" class="input">
+                                <option value="">Automático</option>
+                                <option value="essential">50% · Essenciais</option>
+                                <option value="lifestyle">30% · Estilo de Vida</option>
+                                <option value="investment">20% · Investimentos / Futuro</option>
+                            </select>
                         </div>
                         <div>
                             <label class="label">Cor</label>

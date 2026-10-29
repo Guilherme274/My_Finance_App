@@ -124,6 +124,24 @@ class BudgetPage extends Component
         $this->savedNotice = 'Metas mensais atualizadas com sucesso!';
     }
 
+    public function updateCategoryAllocation(int $categoryId, string $allocation): void
+    {
+        if (! in_array($allocation, ['essential', 'lifestyle', 'investment'], true)) {
+            return;
+        }
+
+        $category = Category::find($categoryId);
+        if ($category) {
+            $category->update(['budget_allocation' => $allocation]);
+            $groupName = match ($allocation) {
+                'essential' => 'Essenciais (50%)',
+                'lifestyle' => 'Estilo de Vida (30%)',
+                'investment' => 'Investimentos (20%)',
+            };
+            $this->savedNotice = "Categoria '{$category->name}' movida para {$groupName}!";
+        }
+    }
+
     public function exportCsv(): StreamedResponse
     {
         $transactions = Transaction::with(['category', 'account'])
@@ -263,7 +281,12 @@ class BudgetPage extends Component
 
         // Category Budgets & Operational Limits (apenas categorias incluídas no orçamento)
         $txsByCategory = $budgetMonthTx->groupBy(fn ($t) => (string) ($t->category_id ?? '__none__'));
-        $spentByCategory = $txsByCategory->map(fn ($items) => abs((int) $items->where('amount_cents', '<', 0)->sum('amount_cents')));
+        $spentByCategory = $txsByCategory->map(function ($items) {
+            $debit = abs((int) $items->where('amount_cents', '<', 0)->sum('amount_cents'));
+            $credit = (int) $items->where('amount_cents', '>', 0)->sum('amount_cents');
+
+            return max(0, $debit - $credit);
+        });
 
         $categories = Category::where('include_in_budget', true)->orderBy('name')->get();
         $categoriesById = $categories->keyBy('id');
@@ -334,9 +357,12 @@ class BudgetPage extends Component
         })->filter()->sortByDesc('spent_cents')->values();
 
         // 50 / 30 / 20 Rule Calculation
-        $essentialNames = ['alimentação', 'mercado', 'moradia', 'saúde', 'transporte', 'educação', 'contas'];
         $essentialCents = 0;
         $lifestyleCents = 0;
+        $investCents = 0;
+        $essentialCategories = [];
+        $lifestyleCategories = [];
+        $investCategories = [];
 
         foreach ($txsByCategory as $catKey => $items) {
             $cat = $catKey === '__none__' ? null : $categoriesById->get($catKey);
@@ -349,23 +375,71 @@ class BudgetPage extends Component
                 continue;
             }
 
-            $catLower = mb_strtolower($cat?->name ?? '');
-            $isEssential = false;
-            foreach ($essentialNames as $kw) {
-                if (str_contains($catLower, $kw)) {
-                    $isEssential = true;
-                    break;
-                }
-            }
+            $rawTxs = $txsByCategory->get($catKey, collect());
+            $transactions = $rawTxs->map(function ($t) {
+                $parsed = BankBrand::parse($t);
 
-            if ($isEssential) {
+                return [
+                    'id' => (string) $t->id,
+                    'date_formatted' => $t->date ? $t->date->format('d/m') : '',
+                    'description' => $t->description,
+                    'clean_title' => $parsed['cleanDescription'],
+                    'bank_brand' => $parsed['brand'],
+                    'amount_cents' => (int) $t->amount_cents,
+                    'amount_formatted' => number_format(abs($t->amount_cents) / 100, 2, ',', '.'),
+                    'is_income' => $t->amount_cents > 0,
+                    'account_name' => $t->account?->name ?? 'Conta',
+                ];
+            })->sortByDesc(fn ($t) => $t['amount_cents'] < 0 ? abs($t['amount_cents']) : 0)->values()->all();
+
+            $group = $cat ? $cat->getAllocationGroup() : 'essential';
+
+            $itemData = [
+                'id' => $catKey,
+                'name' => $cat?->name ?? 'Sem categoria',
+                'color' => $cat?->color ?? '#64748b',
+                'icon' => $cat?->icon,
+                'spent_cents' => $net,
+                'spent_formatted' => number_format($net / 100, 2, ',', '.'),
+                'transactions' => $transactions,
+                'tx_count' => count($transactions),
+            ];
+
+            if ($group === 'essential') {
                 $essentialCents += $net;
+                $essentialCategories[] = $itemData;
+            } elseif ($group === 'investment') {
+                $investCents += $net;
+                $investCategories[] = $itemData;
             } else {
                 $lifestyleCents += $net;
+                $lifestyleCategories[] = $itemData;
             }
         }
 
+        usort($essentialCategories, fn ($a, $b) => $b['spent_cents'] <=> $a['spent_cents']);
+        usort($lifestyleCategories, fn ($a, $b) => $b['spent_cents'] <=> $a['spent_cents']);
+        usort($investCategories, fn ($a, $b) => $b['spent_cents'] <=> $a['spent_cents']);
+
         $baseRuleTotal = $referenceSalaryCents;
+
+        foreach ($essentialCategories as &$cat) {
+            $cat['share_pct'] = $essentialCents > 0 ? (int) round(($cat['spent_cents'] / $essentialCents) * 100) : 0;
+            $cat['salary_pct'] = $baseRuleTotal > 0 ? round(($cat['spent_cents'] / $baseRuleTotal) * 100, 1) : 0;
+        }
+        unset($cat);
+
+        foreach ($lifestyleCategories as &$cat) {
+            $cat['share_pct'] = $lifestyleCents > 0 ? (int) round(($cat['spent_cents'] / $lifestyleCents) * 100) : 0;
+            $cat['salary_pct'] = $baseRuleTotal > 0 ? round(($cat['spent_cents'] / $baseRuleTotal) * 100, 1) : 0;
+        }
+        unset($cat);
+
+        foreach ($investCategories as &$cat) {
+            $cat['share_pct'] = $investCents > 0 ? (int) round(($cat['spent_cents'] / $investCents) * 100) : 0;
+            $cat['salary_pct'] = $baseRuleTotal > 0 ? round(($cat['spent_cents'] / $baseRuleTotal) * 100, 1) : 0;
+        }
+        unset($cat);
 
         $essentialPct = (int) round(($essentialCents / $baseRuleTotal) * 100);
         $lifestylePct = (int) round(($lifestyleCents / $baseRuleTotal) * 100);
@@ -375,6 +449,18 @@ class BudgetPage extends Component
         $lifestyleTargetCents = (int) round($baseRuleTotal * 0.30);
         $investTargetCents = (int) round($baseRuleTotal * 0.20);
         $investAvailableCents = max(0, $baseRuleTotal - $essentialCents - $lifestyleCents);
+
+        $essentialExceeded = $essentialCents > $essentialTargetCents;
+        $essentialDiffCents = abs($essentialCents - $essentialTargetCents);
+        $essentialUsagePct = $essentialTargetCents > 0 ? (int) round(($essentialCents / $essentialTargetCents) * 100) : 0;
+
+        $lifestyleExceeded = $lifestyleCents > $lifestyleTargetCents;
+        $lifestyleDiffCents = abs($lifestyleCents - $lifestyleTargetCents);
+        $lifestyleUsagePct = $lifestyleTargetCents > 0 ? (int) round(($lifestyleCents / $lifestyleTargetCents) * 100) : 0;
+
+        $investTargetMet = $investAvailableCents >= $investTargetCents;
+        $investDiffCents = abs($investAvailableCents - $investTargetCents);
+        $investUsagePct = $investTargetCents > 0 ? (int) round(($investAvailableCents / $investTargetCents) * 100) : 0;
 
         return view('livewire.budget-page', [
             'currentMonthLabel' => ucfirst($currentStart->locale('pt_BR')->translatedFormat('M Y')),
@@ -392,6 +478,10 @@ class BudgetPage extends Component
             'categoryLimits' => $categoryLimits,
             'essentialCents' => $essentialCents,
             'lifestyleCents' => $lifestyleCents,
+            'investCents' => $investCents,
+            'essentialCategories' => $essentialCategories,
+            'lifestyleCategories' => $lifestyleCategories,
+            'investCategories' => $investCategories,
             'essentialTargetCents' => $essentialTargetCents,
             'lifestyleTargetCents' => $lifestyleTargetCents,
             'investTargetCents' => $investTargetCents,
@@ -399,6 +489,15 @@ class BudgetPage extends Component
             'essentialPct' => $essentialPct,
             'lifestylePct' => $lifestylePct,
             'investPct' => $investPct,
+            'essentialExceeded' => $essentialExceeded,
+            'essentialDiffCents' => $essentialDiffCents,
+            'essentialUsagePct' => $essentialUsagePct,
+            'lifestyleExceeded' => $lifestyleExceeded,
+            'lifestyleDiffCents' => $lifestyleDiffCents,
+            'lifestyleUsagePct' => $lifestyleUsagePct,
+            'investTargetMet' => $investTargetMet,
+            'investDiffCents' => $investDiffCents,
+            'investUsagePct' => $investUsagePct,
         ]);
     }
 }

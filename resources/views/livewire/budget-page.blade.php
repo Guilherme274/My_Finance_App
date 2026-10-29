@@ -257,40 +257,435 @@
                 </section>
 
                 <!-- 50 / 30 / 20 Strategic Allocation Bar -->
-                <section class="bg-surface-container-low rounded-2xl p-5 ghost-border space-y-3.5">
+                <section class="bg-surface-container-low rounded-2xl p-5 ghost-border space-y-4" x-data="{ showDetails: true }">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-sm font-bold text-on-surface">Regra Estratégica 50 / 30 / 20</h3>
-                            <p class="text-[0.6875rem] text-on-surface-variant">Equilíbrio entre Essenciais, Estilo de Vida e Futuro</p>
+                            <p class="text-[0.6875rem] text-on-surface-variant">Equilíbrio entre Essenciais (50%), Estilo de Vida (30%) e Investimentos (20%)</p>
                         </div>
-                        <span class="text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-lg">Saúde Alta</span>
+                        <div class="flex items-center gap-2">
+                            @if($essentialExceeded && $lifestyleExceeded)
+                                <span class="text-xs font-bold text-expense bg-expense/10 px-2.5 py-1 rounded-lg">Orçamento Pressionado</span>
+                            @elseif($essentialExceeded)
+                                <span class="text-xs font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-lg">Essenciais Acima da Meta</span>
+                            @elseif($lifestyleExceeded)
+                                <span class="text-xs font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-lg">Estilo Acima da Meta</span>
+                            @else
+                                <span class="text-xs font-bold text-income bg-income/10 px-2.5 py-1 rounded-lg">Distribuição Saudável</span>
+                            @endif
+
+                            <button
+                                type="button"
+                                @click="showDetails = !showDetails"
+                                class="text-xs font-semibold text-primary hover:text-primary-fixed flex items-center gap-1 bg-primary/10 hover:bg-primary/20 px-2.5 py-1 rounded-lg transition-all tap-bounce"
+                                title="Alternar visão detalhada de categorias"
+                            >
+                                <span class="material-symbols-outlined text-sm" x-text="showDetails ? 'expand_less' : 'tune'">tune</span>
+                                <span x-text="showDetails ? 'Recolher' : 'Expandir'">Recolher</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Multi-Segment Progress Bar -->
                     <div class="h-3 w-full rounded-full bg-surface-container-highest overflow-hidden flex gap-0.5 p-0.5">
-                        <div class="h-full bg-primary rounded-l-full animate-bar-x" style="width: {{ max(5, $essentialPct) }}%" title="Essenciais"></div>
-                        <div class="h-full bg-tertiary animate-bar-x" style="width: {{ max(5, $lifestylePct) }}%" title="Estilo de Vida"></div>
-                        <div class="h-full bg-secondary-fixed-dim rounded-r-full animate-bar-x" style="width: {{ max(5, $investPct) }}%" title="Investimentos"></div>
+                        <div class="h-full bg-primary rounded-l-full animate-bar-x" style="width: {{ max(5, $essentialPct) }}%" title="Essenciais ({{ $essentialPct }}%)"></div>
+                        <div class="h-full bg-tertiary animate-bar-x" style="width: {{ max(5, $lifestylePct) }}%" title="Estilo de Vida ({{ $lifestylePct }}%)"></div>
+                        <div class="h-full bg-secondary-fixed-dim rounded-r-full animate-bar-x" style="width: {{ max(5, $investPct) }}%" title="Investimentos ({{ $investPct }}%)"></div>
                     </div>
 
+                    <!-- Mini KPI Overview Cards -->
                     <div class="grid grid-cols-3 gap-2 pt-1 text-center">
-                        <div class="bg-surface-container rounded-xl p-2.5">
+                        <div class="bg-surface-container rounded-xl p-2.5 {{ $essentialExceeded ? 'border border-expense/20' : '' }}">
                             <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block truncate">Essenciais</span>
-                            <span class="text-sm font-extrabold text-primary tabular-nums">{{ $essentialPct }}%</span>
+                            <span class="text-sm font-extrabold {{ $essentialExceeded ? 'text-expense' : 'text-primary' }} tabular-nums">{{ $essentialPct }}%</span>
                             <span class="text-[0.6rem] text-on-surface-variant block mt-0.5">Meta: 50%</span>
-                            <span class="text-[0.65rem] text-primary/80 font-bold block mt-0.5">R$ {{ number_format($essentialTargetCents / 100, 0, ',', '.') }}</span>
+                            <span class="text-[0.65rem] {{ $essentialExceeded ? 'text-expense font-bold' : 'text-primary/80 font-semibold' }} block mt-0.5">
+                                R$ {{ number_format($essentialCents / 100, 0, ',', '.') }} / R$ {{ number_format($essentialTargetCents / 100, 0, ',', '.') }}
+                            </span>
                         </div>
-                        <div class="bg-surface-container rounded-xl p-2.5">
+                        <div class="bg-surface-container rounded-xl p-2.5 {{ $lifestyleExceeded ? 'border border-expense/20' : '' }}">
                             <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block truncate">Estilo de Vida</span>
-                            <span class="text-sm font-extrabold text-tertiary tabular-nums">{{ $lifestylePct }}%</span>
+                            <span class="text-sm font-extrabold {{ $lifestyleExceeded ? 'text-expense' : 'text-tertiary' }} tabular-nums">{{ $lifestylePct }}%</span>
                             <span class="text-[0.6rem] text-on-surface-variant block mt-0.5">Meta: 30%</span>
-                            <span class="text-[0.65rem] text-tertiary/80 font-bold block mt-0.5">R$ {{ number_format($lifestyleTargetCents / 100, 0, ',', '.') }}</span>
+                            <span class="text-[0.65rem] {{ $lifestyleExceeded ? 'text-expense font-bold' : 'text-tertiary/80 font-semibold' }} block mt-0.5">
+                                R$ {{ number_format($lifestyleCents / 100, 0, ',', '.') }} / R$ {{ number_format($lifestyleTargetCents / 100, 0, ',', '.') }}
+                            </span>
                         </div>
                         <div class="bg-surface-container rounded-xl p-2.5">
                             <span class="text-[0.625rem] uppercase tracking-wider text-on-surface-variant block truncate">Investimentos</span>
                             <span class="text-sm font-extrabold text-secondary-fixed-dim tabular-nums">{{ $investPct }}%</span>
                             <span class="text-[0.6rem] text-on-surface-variant block mt-0.5">Meta: 20%</span>
-                            <span class="text-[0.65rem] text-secondary-fixed-dim/80 font-bold block mt-0.5">R$ {{ number_format($investTargetCents / 100, 0, ',', '.') }}</span>
+                            <span class="text-[0.65rem] text-secondary-fixed-dim/80 font-bold block mt-0.5">
+                                R$ {{ number_format($investAvailableCents / 100, 0, ',', '.') }} / R$ {{ number_format($investTargetCents / 100, 0, ',', '.') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Detalhamento Completo das Categorias e Totalidades no 50/30/20 -->
+                    <div x-show="showDetails" x-cloak x-collapse class="space-y-4 pt-1 animate-fade-in">
+                        <div class="flex items-center justify-between pb-1">
+                            <span class="text-xs font-bold text-on-surface">Detalhamento por Grupo & Status de Meta</span>
+                            <a href="{{ route('categories') }}" class="text-[0.6875rem] font-semibold text-primary hover:underline flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">edit_note</span>
+                                Configurar Categorias
+                            </a>
+                        </div>
+
+                        <!-- Pilar 1: Essenciais (50%) -->
+                        <div class="bg-surface-container rounded-2xl p-4 ghost-border space-y-3">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="w-3 h-3 rounded-full bg-primary inline-block shrink-0 mt-1"></span>
+                                    <div>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <h4 class="text-sm font-bold text-on-surface">Essenciais (50%)</h4>
+                                            @if($essentialExceeded)
+                                                <span class="text-[0.625rem] font-bold text-expense bg-expense/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-xs">warning</span>
+                                                    Ultrapassou a meta em R$ {{ number_format($essentialDiffCents / 100, 2, ',', '.') }} ({{ $essentialUsagePct }}% do teto)
+                                                </span>
+                                            @else
+                                                <span class="text-[0.625rem] font-bold text-income bg-income/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-xs">check_circle</span>
+                                                    Dentro da meta (restam R$ {{ number_format($essentialDiffCents / 100, 2, ',', '.') }})
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <p class="text-[0.6875rem] text-on-surface-variant">Necessidades básicas: moradia, transporte, saúde, alimentação e educação</p>
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <div class="text-sm font-extrabold text-on-surface tabular-nums">
+                                        <span class="{{ $essentialExceeded ? 'text-expense font-black' : 'text-primary' }}">R$ {{ number_format($essentialCents / 100, 2, ',', '.') }}</span>
+                                        <span class="text-xs font-normal text-on-surface-variant"> / R$ {{ number_format($essentialTargetCents / 100, 2, ',', '.') }}</span>
+                                    </div>
+                                    <span class="text-[0.625rem] font-bold {{ $essentialExceeded ? 'text-expense' : 'text-primary' }} block">
+                                        Totalidade: {{ $essentialPct }}% do salário
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar do Pilar -->
+                            <div class="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-500 {{ $essentialExceeded ? 'bg-expense' : 'bg-primary' }}" style="width: {{ min(100, $essentialUsagePct) }}%"></div>
+                            </div>
+
+                            <!-- Categorias do Grupo -->
+                            <div class="space-y-1.5 pt-1" x-data="{ expandedCat: null }">
+                                <span class="text-[0.6875rem] font-semibold text-on-surface-variant uppercase tracking-wider block">Categorias consideradas nos 50%:</span>
+                                <div class="space-y-1.5">
+                                    @forelse($essentialCategories as $item)
+                                        @php
+                                            $txList = $item['transactions'] ?? [];
+                                        @endphp
+                                        <div class="bg-surface-container-high/60 rounded-xl overflow-hidden transition-all border border-outline-variant/10">
+                                            <div
+                                                @click="expandedCat = (expandedCat === '{{ $item['id'] }}' ? null : '{{ $item['id'] }}')"
+                                                class="flex items-center justify-between p-3 text-xs cursor-pointer select-none hover:bg-surface-container-high transition-colors group"
+                                            >
+                                                <div class="flex items-center gap-2.5 min-w-0">
+                                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $item['color'] }}"></span>
+                                                    <span class="font-bold text-on-surface group-hover:text-primary transition-colors truncate text-sm">{{ $item['name'] }}</span>
+                                                    @if($item['tx_count'] > 0)
+                                                        <span class="text-[10px] font-semibold text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded-full shrink-0">
+                                                            {{ $item['tx_count'] }} {{ $item['tx_count'] === 1 ? 'item' : 'itens' }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                <div class="flex items-center gap-2.5 shrink-0 ml-2">
+                                                    <span class="text-sm font-extrabold text-on-surface tabular-nums">
+                                                        R$ {{ $item['spent_formatted'] }}
+                                                    </span>
+                                                    <div class="w-6 h-6 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant group-hover:text-primary group-hover:bg-primary/10 transition-colors">
+                                                        <span
+                                                            class="material-symbols-outlined text-[16px] transition-transform duration-200"
+                                                            :class="expandedCat === '{{ $item['id'] }}' ? 'rotate-180 text-primary' : ''"
+                                                        >expand_more</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Gaveta Expansível de Transações da Categoria --}}
+                                            <div
+                                                x-show="expandedCat === '{{ $item['id'] }}'"
+                                                x-cloak
+                                                x-collapse
+                                                class="px-3 pb-3 pt-1 border-t border-outline-variant/10 space-y-2 bg-surface-container-lowest/40"
+                                            >
+                                                @if(count($txList) === 0)
+                                                    <p class="text-[0.6875rem] text-on-surface-variant py-2 text-center italic">Nenhum lançamento registrado no mês.</p>
+                                                @else
+                                                    <div class="space-y-1 max-h-60 overflow-y-auto pr-1 divide-y divide-outline-variant/10">
+                                                        @foreach($txList as $tx)
+                                                            <a
+                                                                href="{{ route('transactions.create', ['editar' => $tx['id']]) }}"
+                                                                wire:navigate
+                                                                class="pt-1.5 first:pt-0 flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-surface-container-highest/60 transition-colors group/tx"
+                                                            >
+                                                                <div class="flex items-center gap-2 min-w-0">
+                                                                    <span class="text-[11px] font-semibold text-on-surface-variant/70 tabular-nums shrink-0">
+                                                                        {{ $tx['date_formatted'] }}
+                                                                    </span>
+                                                                    @if($tx['bank_brand'])
+                                                                        <x-bank-icon :brand="$tx['bank_brand']" size="xs" />
+                                                                    @endif
+                                                                    <span class="text-xs text-on-surface truncate group-hover/tx:text-primary transition-colors">
+                                                                        {{ $tx['clean_title'] ?: $tx['description'] }}
+                                                                    </span>
+                                                                </div>
+                                                                <span class="text-xs font-bold shrink-0 tabular-nums {{ $tx['is_income'] ? 'text-income' : 'text-expense' }}">
+                                                                    {{ $tx['is_income'] ? '+' : '-' }} R$ {{ $tx['amount_formatted'] }}
+                                                                </span>
+                                                            </a>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="text-[0.6875rem] text-on-surface-variant italic py-2 text-center">Nenhum gasto essencial registrado este mês.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pilar 2: Estilo de Vida (30%) -->
+                        <div class="bg-surface-container rounded-2xl p-4 ghost-border space-y-3">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="w-3 h-3 rounded-full bg-tertiary inline-block shrink-0 mt-1"></span>
+                                    <div>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <h4 class="text-sm font-bold text-on-surface">Estilo de Vida (30%)</h4>
+                                            @if($lifestyleExceeded)
+                                                <span class="text-[0.625rem] font-bold text-expense bg-expense/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-xs">warning</span>
+                                                    Ultrapassou a meta em R$ {{ number_format($lifestyleDiffCents / 100, 2, ',', '.') }} ({{ $lifestyleUsagePct }}% do teto)
+                                                </span>
+                                            @else
+                                                <span class="text-[0.625rem] font-bold text-income bg-income/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-xs">check_circle</span>
+                                                    Dentro da meta (restam R$ {{ number_format($lifestyleDiffCents / 100, 2, ',', '.') }})
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <p class="text-[0.6875rem] text-on-surface-variant">Lazer, compras pessoais, passeios, pets e assinaturas</p>
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <div class="text-sm font-extrabold text-on-surface tabular-nums">
+                                        <span class="{{ $lifestyleExceeded ? 'text-expense font-black' : 'text-tertiary' }}">R$ {{ number_format($lifestyleCents / 100, 2, ',', '.') }}</span>
+                                        <span class="text-xs font-normal text-on-surface-variant"> / R$ {{ number_format($lifestyleTargetCents / 100, 2, ',', '.') }}</span>
+                                    </div>
+                                    <span class="text-[0.625rem] font-bold {{ $lifestyleExceeded ? 'text-expense' : 'text-tertiary' }} block">
+                                        Totalidade: {{ $lifestylePct }}% do salário
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar do Pilar -->
+                            <div class="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-500 {{ $lifestyleExceeded ? 'bg-expense' : 'bg-tertiary' }}" style="width: {{ min(100, $lifestyleUsagePct) }}%"></div>
+                            </div>
+
+                            <!-- Categorias do Grupo -->
+                            <div class="space-y-1.5 pt-1" x-data="{ expandedCat: null }">
+                                <span class="text-[0.6875rem] font-semibold text-on-surface-variant uppercase tracking-wider block">Categorias consideradas nos 30%:</span>
+                                <div class="space-y-1.5">
+                                    @forelse($lifestyleCategories as $item)
+                                        @php
+                                            $txList = $item['transactions'] ?? [];
+                                        @endphp
+                                        <div class="bg-surface-container-high/60 rounded-xl overflow-hidden transition-all border border-outline-variant/10">
+                                            <div
+                                                @click="expandedCat = (expandedCat === '{{ $item['id'] }}' ? null : '{{ $item['id'] }}')"
+                                                class="flex items-center justify-between p-3 text-xs cursor-pointer select-none hover:bg-surface-container-high transition-colors group"
+                                            >
+                                                <div class="flex items-center gap-2.5 min-w-0">
+                                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $item['color'] }}"></span>
+                                                    <span class="font-bold text-on-surface group-hover:text-primary transition-colors truncate text-sm">{{ $item['name'] }}</span>
+                                                    @if($item['tx_count'] > 0)
+                                                        <span class="text-[10px] font-semibold text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded-full shrink-0">
+                                                            {{ $item['tx_count'] }} {{ $item['tx_count'] === 1 ? 'item' : 'itens' }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                <div class="flex items-center gap-2.5 shrink-0 ml-2">
+                                                    <span class="text-sm font-extrabold text-on-surface tabular-nums">
+                                                        R$ {{ $item['spent_formatted'] }}
+                                                    </span>
+                                                    <div class="w-6 h-6 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant group-hover:text-primary group-hover:bg-primary/10 transition-colors">
+                                                        <span
+                                                            class="material-symbols-outlined text-[16px] transition-transform duration-200"
+                                                            :class="expandedCat === '{{ $item['id'] }}' ? 'rotate-180 text-primary' : ''"
+                                                        >expand_more</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Gaveta Expansível de Transações da Categoria --}}
+                                            <div
+                                                x-show="expandedCat === '{{ $item['id'] }}'"
+                                                x-cloak
+                                                x-collapse
+                                                class="px-3 pb-3 pt-1 border-t border-outline-variant/10 space-y-2 bg-surface-container-lowest/40"
+                                            >
+                                                @if(count($txList) === 0)
+                                                    <p class="text-[0.6875rem] text-on-surface-variant py-2 text-center italic">Nenhum lançamento registrado no mês.</p>
+                                                @else
+                                                    <div class="space-y-1 max-h-60 overflow-y-auto pr-1 divide-y divide-outline-variant/10">
+                                                        @foreach($txList as $tx)
+                                                            <a
+                                                                href="{{ route('transactions.create', ['editar' => $tx['id']]) }}"
+                                                                wire:navigate
+                                                                class="pt-1.5 first:pt-0 flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-surface-container-highest/60 transition-colors group/tx"
+                                                            >
+                                                                <div class="flex items-center gap-2 min-w-0">
+                                                                    <span class="text-[11px] font-semibold text-on-surface-variant/70 tabular-nums shrink-0">
+                                                                        {{ $tx['date_formatted'] }}
+                                                                    </span>
+                                                                    @if($tx['bank_brand'])
+                                                                        <x-bank-icon :brand="$tx['bank_brand']" size="xs" />
+                                                                    @endif
+                                                                    <span class="text-xs text-on-surface truncate group-hover/tx:text-primary transition-colors">
+                                                                        {{ $tx['clean_title'] ?: $tx['description'] }}
+                                                                    </span>
+                                                                </div>
+                                                                <span class="text-xs font-bold shrink-0 tabular-nums {{ $tx['is_income'] ? 'text-income' : 'text-expense' }}">
+                                                                    {{ $tx['is_income'] ? '+' : '-' }} R$ {{ $tx['amount_formatted'] }}
+                                                                </span>
+                                                            </a>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="text-[0.6875rem] text-on-surface-variant italic py-2 text-center">Nenhum gasto de estilo de vida registrado este mês.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pilar 3: Investimentos & Futuro (20%) -->
+                        <div class="bg-surface-container rounded-2xl p-4 ghost-border space-y-3">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="w-3 h-3 rounded-full bg-secondary-fixed-dim inline-block shrink-0 mt-1"></span>
+                                    <div>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <h4 class="text-sm font-bold text-on-surface">Investimentos & Reserva (20%)</h4>
+                                            @if($investTargetMet)
+                                                <span class="text-[0.625rem] font-bold text-income bg-income/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-xs">check_circle</span>
+                                                    Meta atingida (+R$ {{ number_format($investDiffCents / 100, 2, ',', '.') }} de margem)
+                                                </span>
+                                            @else
+                                                <span class="text-[0.625rem] font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-xs">schedule</span>
+                                                    Abaixo da meta recomendada (faltam R$ {{ number_format($investDiffCents / 100, 2, ',', '.') }})
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <p class="text-[0.6875rem] text-on-surface-variant">Sobra livre e aportes para reserva de emergência e investimentos</p>
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <div class="text-sm font-extrabold text-on-surface tabular-nums">
+                                        <span class="{{ $investTargetMet ? 'text-secondary-fixed-dim' : 'text-amber-500' }}">R$ {{ number_format($investAvailableCents / 100, 2, ',', '.') }}</span>
+                                        <span class="text-xs font-normal text-on-surface-variant"> / R$ {{ number_format($investTargetCents / 100, 2, ',', '.') }}</span>
+                                    </div>
+                                    <span class="text-[0.625rem] font-bold {{ $investTargetMet ? 'text-secondary-fixed-dim' : 'text-amber-500' }} block">
+                                        Totalidade: {{ $investPct }}% do salário
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar do Pilar -->
+                            <div class="h-2 w-full rounded-full bg-surface-container-highest overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-500 bg-secondary-fixed-dim" style="width: {{ min(100, $investUsagePct) }}%"></div>
+                            </div>
+
+                            @if(count($investCategories) > 0)
+                                <div class="space-y-1.5 pt-1" x-data="{ expandedCat: null }">
+                                    <span class="text-[0.6875rem] font-semibold text-on-surface-variant uppercase tracking-wider block">Categorias de Investimento direto:</span>
+                                    <div class="space-y-1.5">
+                                        @foreach($investCategories as $item)
+                                            @php
+                                                $txList = $item['transactions'] ?? [];
+                                            @endphp
+                                            <div class="bg-surface-container-high/60 rounded-xl overflow-hidden transition-all border border-outline-variant/10">
+                                                <div
+                                                    @click="expandedCat = (expandedCat === '{{ $item['id'] }}' ? null : '{{ $item['id'] }}')"
+                                                    class="flex items-center justify-between p-3 text-xs cursor-pointer select-none hover:bg-surface-container-high transition-colors group"
+                                                >
+                                                    <div class="flex items-center gap-2.5 min-w-0">
+                                                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $item['color'] }}"></span>
+                                                        <span class="font-bold text-on-surface group-hover:text-primary transition-colors truncate text-sm">{{ $item['name'] }}</span>
+                                                        @if($item['tx_count'] > 0)
+                                                            <span class="text-[10px] font-semibold text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded-full shrink-0">
+                                                                {{ $item['tx_count'] }} {{ $item['tx_count'] === 1 ? 'item' : 'itens' }}
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex items-center gap-2.5 shrink-0 ml-2">
+                                                        <span class="text-sm font-extrabold text-on-surface tabular-nums">
+                                                            R$ {{ $item['spent_formatted'] }}
+                                                        </span>
+                                                        <div class="w-6 h-6 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant group-hover:text-primary group-hover:bg-primary/10 transition-colors">
+                                                            <span
+                                                                class="material-symbols-outlined text-[16px] transition-transform duration-200"
+                                                                :class="expandedCat === '{{ $item['id'] }}' ? 'rotate-180 text-primary' : ''"
+                                                            >expand_more</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    x-show="expandedCat === '{{ $item['id'] }}'"
+                                                    x-cloak
+                                                    x-collapse
+                                                    class="px-3 pb-3 pt-1 border-t border-outline-variant/10 space-y-2 bg-surface-container-lowest/40"
+                                                >
+                                                    @if(count($txList) === 0)
+                                                        <p class="text-[0.6875rem] text-on-surface-variant py-2 text-center italic">Nenhum lançamento registrado no mês.</p>
+                                                    @else
+                                                        <div class="space-y-1 max-h-60 overflow-y-auto pr-1 divide-y divide-outline-variant/10">
+                                                            @foreach($txList as $tx)
+                                                                <a
+                                                                    href="{{ route('transactions.create', ['editar' => $tx['id']]) }}"
+                                                                    wire:navigate
+                                                                    class="pt-1.5 first:pt-0 flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-surface-container-highest/60 transition-colors group/tx"
+                                                                >
+                                                                    <div class="flex items-center gap-2 min-w-0">
+                                                                        <span class="text-[11px] font-semibold text-on-surface-variant/70 tabular-nums shrink-0">
+                                                                            {{ $tx['date_formatted'] }}
+                                                                        </span>
+                                                                        @if($tx['bank_brand'])
+                                                                            <x-bank-icon :brand="$tx['bank_brand']" size="xs" />
+                                                                        @endif
+                                                                        <span class="text-xs text-on-surface truncate group-hover/tx:text-primary transition-colors">
+                                                                            {{ $tx['clean_title'] ?: $tx['description'] }}
+                                                                        </span>
+                                                                    </div>
+                                                                    <span class="text-xs font-bold shrink-0 tabular-nums {{ $tx['is_income'] ? 'text-income' : 'text-expense' }}">
+                                                                        {{ $tx['is_income'] ? '+' : '-' }} R$ {{ $tx['amount_formatted'] }}
+                                                                    </span>
+                                                                </a>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @else
+                                <div class="text-[0.6875rem] text-on-surface-variant bg-surface-container-high/40 p-2.5 rounded-xl flex items-center justify-between">
+                                    <span>Sobra líquida da sua renda de <strong>R$ {{ number_format($referenceSalaryCents / 100, 2, ',', '.') }}</strong> pronta para ser poupada/investida:</span>
+                                    <span class="font-extrabold text-secondary-fixed-dim text-xs tabular-nums">R$ {{ number_format($investAvailableCents / 100, 2, ',', '.') }}</span>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </section>
