@@ -30,45 +30,70 @@ class MercadoPagoClient
     }
 
     /**
-     * Busca pagamentos (recebidos ou enviados) em um intervalo de datas.
+     * Busca um pagamento específico pelo ID (funciona mesmo para pagamentos com mais de 12 meses).
+     */
+    public function getPayment(string $id): ?array
+    {
+        $response = $this->request()->get('/v1/payments/'.rawurlencode($id));
+        if (! $response->successful()) {
+            return null;
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * Busca pagamentos (recebidos ou enviados) com ou sem filtro de intervalo de datas.
      *
      * @param  array<string, scalar>  $filters  filtros extras (ex.: ['payer.id' => 123])
      * @return array{results: array<int, array>, paging: array}
      */
-    public function searchPayments(CarbonInterface $begin, CarbonInterface $end, int $offset = 0, int $limit = 50, array $filters = []): array
+    public function searchPayments(?CarbonInterface $begin = null, ?CarbonInterface $end = null, int $offset = 0, int $limit = 50, array $filters = []): array
     {
-        return $this->request()->get('/v1/payments/search', array_merge([
+        $query = [
             'sort' => 'date_created',
             'criteria' => 'desc',
-            'range' => 'date_created',
-            'begin_date' => $begin->toIso8601String(),
-            'end_date' => $end->toIso8601String(),
             'offset' => $offset,
             'limit' => $limit,
-        ], $filters))->throw()->json();
+        ];
+
+        if ($begin && $end) {
+            $query['range'] = 'date_created';
+            $query['begin_date'] = $begin->format('Y-m-d\TH:i:s.vP');
+            $query['end_date'] = $end->format('Y-m-d\TH:i:s.vP');
+        }
+
+        return $this->request()->get('/v1/payments/search', array_merge($query, $filters))->throw()->json();
     }
 
     /**
-     * Solicita a geração do relatório de liberações (extrato consolidado, assíncrono).
+     * Solicita a geração do relatório de liberações/movimentações da conta (máx. 90 dias por bloco).
      */
     public function createReleaseReport(CarbonInterface $begin, CarbonInterface $end): array
     {
-        return $this->request()->post('/v1/account/release_report', [
+        $response = $this->request()->post('/v1/account/release_report', [
             'begin_date' => $begin->utc()->format('Y-m-d\TH:i:s\Z'),
             'end_date' => $end->utc()->format('Y-m-d\TH:i:s\Z'),
-        ])->throw()->json() ?? [];
+        ]);
+
+        return $response->json() ?? [];
     }
 
     /**
-     * Lista os relatórios de liberações já gerados.
+     * Lista os relatórios de liberações/movimentações já gerados na conta.
      */
     public function listReleaseReports(): array
     {
-        return $this->request()->get('/v1/account/release_report/list')->throw()->json() ?? [];
+        $response = $this->request()->get('/v1/account/release_report/list');
+        if (! $response->successful()) {
+            return [];
+        }
+
+        return $response->json() ?? [];
     }
 
     /**
-     * Baixa um relatório gerado (conteúdo CSV).
+     * Baixa um relatório de liberações/movimentações gerado (conteúdo CSV separado por ponto-e-vírgula).
      */
     public function downloadReleaseReport(string $fileName): string
     {

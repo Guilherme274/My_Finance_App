@@ -26,6 +26,7 @@ class SyncService
         'bank_profiles',
         'import_batches',
         'transactions',
+        'investments',
     ];
 
     /** @var array<string, array<int, string>> */
